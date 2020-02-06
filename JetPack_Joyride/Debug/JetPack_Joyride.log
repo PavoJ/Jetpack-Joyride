@@ -1,0 +1,5 @@
+﻿  main.c
+P:\Documents\Documents\sync\prog\C++\JetPack_Joyride\JetPack_Joyride\main.c(12,48): warning C4047: 'function': 'sfUint32' differs in levels of indirection from 'void *'
+P:\Documents\Documents\sync\prog\C++\JetPack_Joyride\JetPack_Joyride\main.c(12,48): warning C4024: 'sfRenderWindow_create': different types for formal and actual parameter 3
+P:\Documents\Documents\sync\prog\C++\JetPack_Joyride\JetPack_Joyride\main.c(25,28): warning C4133: 'function': incompatible types - from 'sfRenderWindow *' to 'const sfWindow *'
+  JetPack_Joyride.vcxproj -> P:\Documents\Documents\sync\prog\C++\JetPack_Joyride\Debug\JetPack_Joyride.exe
