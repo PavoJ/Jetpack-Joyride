@@ -3,31 +3,32 @@
 
 int main()
 {
-	sfRenderWindow *win;
+	sfRenderWindow *win; //dichiarazione finestra
 
-	sfVideoMode vMode;
+	sfVideoMode vMode; // size finestra
 	vMode.width = 1920;
 	vMode.height = 1080;
 
 	win = sfRenderWindow_create(vMode, "hey", sfClose, NULL);
-	
-	sfCircleShape* c = sfCircleShape_create();
+	// creazione finestra con dati imessi precedentemente
 
-	sfCircleShape_setFillColor(c, sfColor_fromRGB(0, 0, 0));
-	sfCircleShape_setRadius(c, 500);
-
-	sfVector2f circle;
-	circle.x = 0;
-	circle.y = 0;
-
-	sfCircleShape_setPosition(c, circle);
-
-	while (sfWindow_isOpen(win))
+	while (sfWindow_isOpen(win))//controlla se la finestra è aperta
 	{
-		sfRenderWindow_clear(win, sfColor_fromRGB(255, 255, 255));
+		sfEvent event;
+		while (sfRenderWindow_pollEvent(win, &event))
+		{//controla se ci sono eventi
+			switch (event.type)//controlla il tipo di evento
+			{
+			case sfEvtClosed: // tipo di vento
+				sfRenderWindow_close(win); //ad es. chiusura finestra
+				break;
+			}
+		}
 
-		sfRenderWindow_drawCircleShape(win, c, NULL);
+		sfRenderWindow_clear(win, sfColor_fromRGB(255, 255, 255));
+		// sostituisce il contenuto della finestra col colore stabilito
 
 		sfRenderWindow_display(win);
+		//mostra la finestra modificata
 	}
 }
