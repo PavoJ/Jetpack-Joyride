@@ -1,3 +1,5 @@
 ﻿  main.c
-P:\Documents\Documents\sync\prog\C\JetPack_Joyride\JetPack_Joyride\main.c(30,1): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+P:\Documents\Documents\sync\prog\C\JetPack_Joyride\JetPack_Joyride\logica.h(69,31): warning C4244: '+=': conversion from 'float' to 'int', possible loss of data
+P:\Documents\Documents\sync\prog\C\JetPack_Joyride\JetPack_Joyride\main.c(40,1): warning C4244: 'initializing': conversion from 'unsigned int' to 'float', possible loss of data
+P:\Documents\Documents\sync\prog\C\JetPack_Joyride\JetPack_Joyride\main.c(142,1): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
   JetPack_Joyride.vcxproj -> P:\Documents\Documents\sync\prog\C\JetPack_Joyride\Debug\JetPack_Joyride.exe

@@ -1,9 +1,0 @@
-﻿  main.c
-main.obj : error LNK2019: unresolved external symbol __imp_sfWindow_create referenced in function main
-main.obj : error LNK2019: unresolved external symbol __imp_sfWindow_isOpen referenced in function main
-P:\PortableApps\CommonFiles\CSFML-2.5\lib\msvc\csfml-audio.lib : warning LNK4272: library machine type 'x86' conflicts with target machine type 'x64'
-P:\PortableApps\CommonFiles\CSFML-2.5\lib\msvc\csfml-graphics.lib : warning LNK4272: library machine type 'x86' conflicts with target machine type 'x64'
-P:\PortableApps\CommonFiles\CSFML-2.5\lib\msvc\csfml-network.lib : warning LNK4272: library machine type 'x86' conflicts with target machine type 'x64'
-P:\PortableApps\CommonFiles\CSFML-2.5\lib\msvc\csfml-system.lib : warning LNK4272: library machine type 'x86' conflicts with target machine type 'x64'
-P:\PortableApps\CommonFiles\CSFML-2.5\lib\msvc\csfml-window.lib : warning LNK4272: library machine type 'x86' conflicts with target machine type 'x64'
-P:\Documents\Documents\sync\prog\C++\JetPack_Joyride\x64\Debug\JetPack_Joyride.exe : fatal error LNK1120: 2 unresolved externals

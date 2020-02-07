@@ -18,6 +18,12 @@
     <ClCompile Include="main.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="gameClock.h">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="logica.h">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Font Include="defaultFont.ttf">
