@@ -1,5 +1,6 @@
-#include"logica.h"
-#include"gameClock.h"
+#include"logica.c"
+#include"gameClock.c"
+#include"textHandler.c"
 
 #include <SFML\Graphics.h>
 #include <SFML\window.h>
@@ -9,36 +10,11 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-int menu(sfRenderWindow* win, sfVideoMode vMode, sfColor clearColor, int argc, ...)
+int menu(sfRenderWindow* win, sfVideoMode vMode, sfColor clearColor, int argc, dynText* states)
 {
+	int a;
 	int clickedButton = -1;
 	int activeButton = -1;
-
-	va_list list;
-	va_start(list, argc);
-	
-	sfFont* defaultFont = sfFont_createFromFile("defaultFont.ttf");
-
-	sfText** options = malloc(argc*sizeof(sfText*));
-
-	sfFloatRect rect;
-	int a;
-	for (a = 0; a < argc; a++)
-	{
-		options[a] = sfText_create();
-
-		sfText_setString(options[a], va_arg(list, char*));
-		sfText_setColor(options[a], sfBlack);
-
-		sfText_setFont(options[a], defaultFont);
-		sfText_setCharacterSize(options[a], 70);
-
-		rect = sfText_getLocalBounds(options[a]);
-
-		sfText_setOrigin(options[a], (sfVector2f) { rect.width / 2, rect.height / 2 });
-
-		sfText_setPosition(options[a], (sfVector2f) { (vMode.width / 2), (vMode.height / (argc + 1)) * (a + 1) });
-	}
 
 	sfFloatRect playR;
 
@@ -60,20 +36,17 @@ int menu(sfRenderWindow* win, sfVideoMode vMode, sfColor clearColor, int argc, .
 				for (a = 0; a < argc; a++)
 				{
 					mouse = sfMouse_getPositionRenderWindow(win);
-					playR = sfText_getGlobalBounds(options[a]);
+					playR = sfText_getGlobalBounds(states[a].text);
 
 					if (sfFloatRect_contains(&playR, (float)mouse.x, (float)mouse.y))
 					{
-						sfText_setColor(options[a], sfColor_fromRGB(70, 70, 150));
+						sfText_setColor(states[a].text, sfColor_fromRGB(70, 70, 150));
 						activeButton = a;
 					}
-					else
+					else if (activeButton == a)
 					{
-						sfText_setColor(options[a], sfBlack);
-						if (activeButton == a)
-						{
-							activeButton = -1;
-						}
+						sfText_setColor(states[a].text, sfBlack);
+						activeButton = -1;
 					}
 				}
 				break;
@@ -84,6 +57,7 @@ int menu(sfRenderWindow* win, sfVideoMode vMode, sfColor clearColor, int argc, .
 					if (activeButton != -1)
 					{
 						clickedButton = activeButton;
+						txtHandler_click(states[activeButton]);
 					}
 				}
 				break;
@@ -93,7 +67,7 @@ int menu(sfRenderWindow* win, sfVideoMode vMode, sfColor clearColor, int argc, .
 		sfRenderWindow_clear(win, clearColor);
 
 		for(a=0 ; a<argc ; a++)
-			sfRenderWindow_drawText(win, options[a], NULL);
+			sfRenderWindow_drawText(win, states[a].text, NULL);
 
 		sfRenderWindow_display(win);
 	}
@@ -141,7 +115,7 @@ void gameLoop(sfRenderWindow* win, sfVideoMode vMode)
 
 	bool movingUp = false;//se il tasto per andare su è tenuto premuto.
 
-	player* pl = getPS();
+	player* pl = getP();
 	
 	//finchè la finestra è aperta
 	while (sfRenderWindow_isOpen(win))
@@ -197,10 +171,13 @@ int main ()
 	vMode.width = 1920;
 	vMode.height = 1080;
 
+	
 	//creazione della finestra
 	win = sfRenderWindow_create(vMode, "Jetpack vs. Zombies", sfClose, NULL);
 
-	int inp = menu(win, vMode, sfColor_fromRGB(150, 150, 150), 5, "Gioca", "Impostazioni", "Scoreboard", "Credits", "Esci");
+	inText* m;
+	int inp = menu(win, vMode, sfColor_fromRGB(150, 150, 150), 5, m);
+	
 	switch (inp)
 	{
 	case 0:

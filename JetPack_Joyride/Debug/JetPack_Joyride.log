@@ -1,6 +1,4 @@
-﻿  main.c
-P:\Documents\Documents\sync\prog\C\JetPack_Joyride\JetPack_Joyride\main.c(40,1): warning C4244: 'initializing': conversion from 'unsigned int' to 'float', possible loss of data
-P:\Documents\Documents\sync\prog\C\JetPack_Joyride\JetPack_Joyride\main.c(105,1): warning C4244: 'initializing': conversion from 'unsigned int' to 'float', possible loss of data
-P:\Documents\Documents\sync\prog\C\JetPack_Joyride\JetPack_Joyride\main.c(109,1): warning C4244: 'initializing': conversion from 'unsigned int' to 'float', possible loss of data
-P:\Documents\Documents\sync\prog\C\JetPack_Joyride\JetPack_Joyride\main.c(171,1): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
-  JetPack_Joyride.vcxproj -> P:\Documents\Documents\sync\prog\C\JetPack_Joyride\Debug\JetPack_Joyride.exe
+﻿  logica.h
+P:\Documents\Documents\sync\prog\C\JetPack_Joyride\JetPack_Joyride\logica.c(17,1): warning C4005: 'jpVelocity': macro redefinition
+P:\Documents\Documents\sync\prog\C\JetPack_Joyride\JetPack_Joyride\logica.c(13): message : see previous definition of 'jpVelocity'
+P:\Documents\Documents\sync\prog\C\JetPack_Joyride\JetPack_Joyride\logica.c(47,16): error C2065: 'jpVelocity': undeclared identifier

@@ -1,5 +1,5 @@
 #ifndef LOGICA_H
-#define LOGICA_H
+#define LOGICA_H 1
 
 #include"logica.c"
 
@@ -11,6 +11,6 @@ void move (bool moveUp);
 */
 
 
-player* getPS();
+player* getP();
 
 #endif
