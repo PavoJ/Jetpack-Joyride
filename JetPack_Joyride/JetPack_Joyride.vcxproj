@@ -150,9 +150,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="gameClock.c" />
     <ClCompile Include="gameClock.h" />
+    <ClCompile Include="logica.c" />
     <ClCompile Include="logica.h" />
     <ClCompile Include="main.c" />
+    <ClCompile Include="textHandler.c" />
   </ItemGroup>
   <ItemGroup>
     <Font Include="defaultFont.ttf" />
