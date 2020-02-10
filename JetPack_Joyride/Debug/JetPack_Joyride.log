@@ -1,4 +1,10 @@
-﻿  logica.h
-P:\Documents\Documents\sync\prog\C\JetPack_Joyride\JetPack_Joyride\logica.c(17,1): warning C4005: 'jpVelocity': macro redefinition
-P:\Documents\Documents\sync\prog\C\JetPack_Joyride\JetPack_Joyride\logica.c(13): message : see previous definition of 'jpVelocity'
-P:\Documents\Documents\sync\prog\C\JetPack_Joyride\JetPack_Joyride\logica.c(47,16): error C2065: 'jpVelocity': undeclared identifier
+﻿  main.c
+D:\Documents\C\JetPack_Joyride\JetPack_Joyride\textHandler.c(40,18): warning C4133: '=': incompatible types - from 'dynText *' to 'dynText *'
+D:\Documents\C\JetPack_Joyride\JetPack_Joyride\textHandler.c(57,30): warning C4047: '=': 'char **' differs in levels of indirection from 'char (*)[30]'
+D:\Documents\C\JetPack_Joyride\JetPack_Joyride\main.c(54,27): warning C4133: '=': incompatible types - from 'dynText *' to 'dynText *'
+D:\Documents\C\JetPack_Joyride\JetPack_Joyride\main.c(71,29): warning C4133: '=': incompatible types - from 'dynText *' to 'dynText *'
+D:\Documents\C\JetPack_Joyride\JetPack_Joyride\main.c(88,25): warning C4133: '=': incompatible types - from 'dynText *' to 'dynText *'
+D:\Documents\C\JetPack_Joyride\JetPack_Joyride\main.c(15,6): warning C4101: 'a': unreferenced local variable
+D:\Documents\C\JetPack_Joyride\JetPack_Joyride\main.c(102,1): warning C4244: 'initializing': conversion from 'unsigned int' to 'float', possible loss of data
+D:\Documents\C\JetPack_Joyride\JetPack_Joyride\main.c(106,1): warning C4244: 'initializing': conversion from 'unsigned int' to 'float', possible loss of data
+  JetPack_Joyride.vcxproj -> D:\Documents\C\JetPack_Joyride\Debug\JetPack_Joyride.exe
