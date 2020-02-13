@@ -18,12 +18,6 @@
     <ClCompile Include="main.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="textHandler.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="gameClock.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="gameClock.h">
       <Filter>Header Files</Filter>
     </ClCompile>

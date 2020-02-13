@@ -1,4 +1,23 @@
-﻿  logica.h
-P:\Documents\Documents\sync\prog\C\JetPack_Joyride\JetPack_Joyride\logica.c(17,1): warning C4005: 'jpVelocity': macro redefinition
-P:\Documents\Documents\sync\prog\C\JetPack_Joyride\JetPack_Joyride\logica.c(13): message : see previous definition of 'jpVelocity'
-P:\Documents\Documents\sync\prog\C\JetPack_Joyride\JetPack_Joyride\logica.c(47,16): error C2065: 'jpVelocity': undeclared identifier
+﻿  main.c
+P:\Documents\Documents\sync\prog\C\JetPack_Joyride\JetPack_Joyride\textHandler.c(16,2): error C2061: syntax error: identifier 'dynText'
+P:\Documents\Documents\sync\prog\C\JetPack_Joyride\JetPack_Joyride\textHandler.c(17,1): error C2059: syntax error: '}'
+P:\Documents\Documents\sync\prog\C\JetPack_Joyride\JetPack_Joyride\textHandler.c(30,35): error C2143: syntax error: missing ')' before '*'
+P:\Documents\Documents\sync\prog\C\JetPack_Joyride\JetPack_Joyride\textHandler.c(30,35): error C2143: syntax error: missing '{' before '*'
+P:\Documents\Documents\sync\prog\C\JetPack_Joyride\JetPack_Joyride\textHandler.c(30,46): error C2059: syntax error: 'type'
+P:\Documents\Documents\sync\prog\C\JetPack_Joyride\JetPack_Joyride\textHandler.c(30,94): error C2059: syntax error: ')'
+P:\Documents\Documents\sync\prog\C\JetPack_Joyride\JetPack_Joyride\textHandler.c(62,31): error C2146: syntax error: missing ')' before identifier 'dtxt'
+P:\Documents\Documents\sync\prog\C\JetPack_Joyride\JetPack_Joyride\textHandler.c(62,31): error C2061: syntax error: identifier 'dtxt'
+P:\Documents\Documents\sync\prog\C\JetPack_Joyride\JetPack_Joyride\textHandler.c(62,31): error C2059: syntax error: ';'
+P:\Documents\Documents\sync\prog\C\JetPack_Joyride\JetPack_Joyride\textHandler.c(62,35): error C2059: syntax error: ')'
+P:\Documents\Documents\sync\prog\C\JetPack_Joyride\JetPack_Joyride\textHandler.c(63,1): error C2449: found '{' at file scope (missing function header?)
+P:\Documents\Documents\sync\prog\C\JetPack_Joyride\JetPack_Joyride\textHandler.c(66,1): error C2059: syntax error: '}'
+P:\Documents\Documents\sync\prog\C\JetPack_Joyride\JetPack_Joyride\main.c(102,1): warning C4244: 'initializing': conversion from 'unsigned int' to 'float', possible loss of data
+P:\Documents\Documents\sync\prog\C\JetPack_Joyride\JetPack_Joyride\main.c(106,1): warning C4244: 'initializing': conversion from 'unsigned int' to 'float', possible loss of data
+P:\Documents\Documents\sync\prog\C\JetPack_Joyride\JetPack_Joyride\main.c(198,10): error C2065: 'dynText': undeclared identifier
+P:\Documents\Documents\sync\prog\C\JetPack_Joyride\JetPack_Joyride\main.c(198,10): error C2146: syntax error: missing ';' before identifier 'm'
+P:\Documents\Documents\sync\prog\C\JetPack_Joyride\JetPack_Joyride\main.c(198,11): error C2065: 'm': undeclared identifier
+P:\Documents\Documents\sync\prog\C\JetPack_Joyride\JetPack_Joyride\main.c(216,24): warning C4013: 'txtHandler_appendText' undefined; assuming extern returning int
+P:\Documents\Documents\sync\prog\C\JetPack_Joyride\JetPack_Joyride\main.c(216,27): error C2065: 'm': undeclared identifier
+P:\Documents\Documents\sync\prog\C\JetPack_Joyride\JetPack_Joyride\main.c(220,6): warning C4013: 'menu' undefined; assuming extern returning int
+P:\Documents\Documents\sync\prog\C\JetPack_Joyride\JetPack_Joyride\main.c(220,52): error C2065: 'm': undeclared identifier
+P:\Documents\Documents\sync\prog\C\JetPack_Joyride\JetPack_Joyride\main.c(211,1): warning C4244: 'initializing': conversion from 'unsigned int' to 'float', possible loss of data

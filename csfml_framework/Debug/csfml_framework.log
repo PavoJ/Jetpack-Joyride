@@ -1,0 +1,76 @@
+﻿  dynText.c
+  sceneHandler.c
+P:\Documents\Documents\sync\prog\C\csfml_framework\csfml_framework\sceneHandler.c(11,10): error C2143: syntax error: missing '{' before '*'
+P:\Documents\Documents\sync\prog\C\csfml_framework\csfml_framework\sceneHandler.c(11,37): error C2143: syntax error: missing ')' before '*'
+P:\Documents\Documents\sync\prog\C\csfml_framework\csfml_framework\sceneHandler.c(11,37): error C2143: syntax error: missing '{' before '*'
+P:\Documents\Documents\sync\prog\C\csfml_framework\csfml_framework\sceneHandler.c(11,42): error C2371: 'sfVector2f': redefinition; different basic types
+P:\PortableApps\CommonFiles\CSFML-2.5\include\SFML\System\Vector2.h(64): message : see declaration of 'sfVector2f'
+P:\Documents\Documents\sync\prog\C\csfml_framework\csfml_framework\sceneHandler.c(11,53): error C2146: syntax error: missing ';' before identifier 'pos'
+P:\Documents\Documents\sync\prog\C\csfml_framework\csfml_framework\sceneHandler.c(11,58): error C2371: 'sfFont': redefinition; different basic types
+P:\PortableApps\CommonFiles\CSFML-2.5\include\SFML\Graphics\Types.h(31): message : see declaration of 'sfFont'
+P:\Documents\Documents\sync\prog\C\csfml_framework\csfml_framework\sceneHandler.c(11,64): error C2143: syntax error: missing ';' before '*'
+P:\Documents\Documents\sync\prog\C\csfml_framework\csfml_framework\sceneHandler.c(11,85): error C2059: syntax error: 'type'
+P:\Documents\Documents\sync\prog\C\csfml_framework\csfml_framework\sceneHandler.c(11,108): error C2059: syntax error: ')'
+P:\Documents\Documents\sync\prog\C\csfml_framework\csfml_framework\sceneHandler.c(46,2): error C2061: syntax error: identifier 'shDynText'
+P:\Documents\Documents\sync\prog\C\csfml_framework\csfml_framework\sceneHandler.c(50,1): error C2059: syntax error: '}'
+P:\Documents\Documents\sync\prog\C\csfml_framework\csfml_framework\sceneHandler.c(55,2): error C2365: 'text': redefinition; previous definition was 'data variable'
+P:\Documents\Documents\sync\prog\C\csfml_framework\csfml_framework\sceneHandler.c(47): message : see declaration of 'text'
+P:\Documents\Documents\sync\prog\C\csfml_framework\csfml_framework\sceneHandler.c(55,6): error C2086: 'shSceneE text': redefinition
+P:\Documents\Documents\sync\prog\C\csfml_framework\csfml_framework\sceneHandler.c(55): message : see declaration of 'text'
+P:\Documents\Documents\sync\prog\C\csfml_framework\csfml_framework\sceneHandler.c(56,2): error C2365: 'rect': redefinition; previous definition was 'data variable'
+P:\Documents\Documents\sync\prog\C\csfml_framework\csfml_framework\sceneHandler.c(48): message : see declaration of 'rect'
+P:\Documents\Documents\sync\prog\C\csfml_framework\csfml_framework\sceneHandler.c(56,6): error C2086: 'shSceneE rect': redefinition
+P:\Documents\Documents\sync\prog\C\csfml_framework\csfml_framework\sceneHandler.c(56): message : see declaration of 'rect'
+P:\Documents\Documents\sync\prog\C\csfml_framework\csfml_framework\sceneHandler.c(57,2): error C2365: 'sprite': redefinition; previous definition was 'data variable'
+P:\Documents\Documents\sync\prog\C\csfml_framework\csfml_framework\sceneHandler.c(49): message : see declaration of 'sprite'
+P:\Documents\Documents\sync\prog\C\csfml_framework\csfml_framework\sceneHandler.c(58,1): error C2086: 'shSceneE sprite': redefinition
+P:\Documents\Documents\sync\prog\C\csfml_framework\csfml_framework\sceneHandler.c(57): message : see declaration of 'sprite'
+P:\Documents\Documents\sync\prog\C\csfml_framework\csfml_framework\sceneHandler.c(63,18): error C2079: 'T' uses undefined union 'shSceneT'
+P:\Documents\Documents\sync\prog\C\csfml_framework\csfml_framework\sceneHandler.c(64,2): error C2061: syntax error: identifier 'scene'
+P:\Documents\Documents\sync\prog\C\csfml_framework\csfml_framework\sceneHandler.c(65,1): error C2059: syntax error: '}'
+P:\Documents\Documents\sync\prog\C\csfml_framework\csfml_framework\sceneHandler.c(67,23): error C2143: syntax error: missing ')' before '*'
+P:\Documents\Documents\sync\prog\C\csfml_framework\csfml_framework\sceneHandler.c(67,23): error C2143: syntax error: missing '{' before '*'
+P:\Documents\Documents\sync\prog\C\csfml_framework\csfml_framework\sceneHandler.c(67,28): error C2371: 'sfRenderWindow': redefinition; different basic types
+P:\PortableApps\CommonFiles\CSFML-2.5\include\SFML\Graphics\Types.h(36): message : see declaration of 'sfRenderWindow'
+P:\Documents\Documents\sync\prog\C\csfml_framework\csfml_framework\sceneHandler.c(67,42): error C2143: syntax error: missing ';' before '*'
+P:\Documents\Documents\sync\prog\C\csfml_framework\csfml_framework\sceneHandler.c(67,47): error C2059: syntax error: ')'
+P:\Documents\Documents\sync\prog\C\csfml_framework\csfml_framework\sceneHandler.c(68,1): error C2054: expected '(' to follow 'win'
+P:\Documents\Documents\sync\prog\C\csfml_framework\csfml_framework\sceneHandler.c(94,6): error C2143: syntax error: missing '{' before '*'
+P:\Documents\Documents\sync\prog\C\csfml_framework\csfml_framework\sceneHandler.c(94,23): error C2143: syntax error: missing ')' before '*'
+P:\Documents\Documents\sync\prog\C\csfml_framework\csfml_framework\sceneHandler.c(94,23): error C2143: syntax error: missing '{' before '*'
+P:\Documents\Documents\sync\prog\C\csfml_framework\csfml_framework\sceneHandler.c(94,26): error C2059: syntax error: ')'
+P:\Documents\Documents\sync\prog\C\csfml_framework\csfml_framework\sceneHandler.c(95,1): error C2054: expected '(' to follow 's'
+P:\Documents\Documents\sync\prog\C\csfml_framework\csfml_framework\sceneHandler.c(116,27): error C2143: syntax error: missing ')' before '*'
+P:\Documents\Documents\sync\prog\C\csfml_framework\csfml_framework\sceneHandler.c(116,27): error C2143: syntax error: missing '{' before '*'
+P:\Documents\Documents\sync\prog\C\csfml_framework\csfml_framework\sceneHandler.c(116,32): error C2371: 'sfVector2f': redefinition; different basic types
+P:\PortableApps\CommonFiles\CSFML-2.5\include\SFML\System\Vector2.h(64): message : see declaration of 'sfVector2f'
+P:\Documents\Documents\sync\prog\C\csfml_framework\csfml_framework\sceneHandler.c(116,43): error C2146: syntax error: missing ';' before identifier 'pos'
+P:\Documents\Documents\sync\prog\C\csfml_framework\csfml_framework\sceneHandler.c(116,48): error C2371: 'sfFont': redefinition; different basic types
+P:\PortableApps\CommonFiles\CSFML-2.5\include\SFML\Graphics\Types.h(31): message : see declaration of 'sfFont'
+P:\Documents\Documents\sync\prog\C\csfml_framework\csfml_framework\sceneHandler.c(116,54): error C2143: syntax error: missing ';' before '*'
+P:\Documents\Documents\sync\prog\C\csfml_framework\csfml_framework\sceneHandler.c(116,75): error C2059: syntax error: 'type'
+P:\Documents\Documents\sync\prog\C\csfml_framework\csfml_framework\sceneHandler.c(116,100): error C2059: syntax error: ')'
+P:\Documents\Documents\sync\prog\C\csfml_framework\csfml_framework\sceneHandler.c(136,43): error C2143: syntax error: missing ')' before '*'
+P:\Documents\Documents\sync\prog\C\csfml_framework\csfml_framework\sceneHandler.c(136,43): error C2143: syntax error: missing '{' before '*'
+P:\Documents\Documents\sync\prog\C\csfml_framework\csfml_framework\sceneHandler.c(136,48): error C2371: 'sfVector2f': redefinition; different basic types
+P:\PortableApps\CommonFiles\CSFML-2.5\include\SFML\System\Vector2.h(64): message : see declaration of 'sfVector2f'
+P:\Documents\Documents\sync\prog\C\csfml_framework\csfml_framework\sceneHandler.c(136,59): error C2146: syntax error: missing ';' before identifier 'pos'
+P:\Documents\Documents\sync\prog\C\csfml_framework\csfml_framework\sceneHandler.c(136,64): error C2371: 'sfVector2f': redefinition; different basic types
+P:\PortableApps\CommonFiles\CSFML-2.5\include\SFML\System\Vector2.h(64): message : see declaration of 'sfVector2f'
+P:\Documents\Documents\sync\prog\C\csfml_framework\csfml_framework\sceneHandler.c(136,75): error C2146: syntax error: missing ';' before identifier 'dim'
+P:\Documents\Documents\sync\prog\C\csfml_framework\csfml_framework\sceneHandler.c(136,80): error C2371: 'sfColor': redefinition; different basic types
+P:\PortableApps\CommonFiles\CSFML-2.5\include\SFML\Graphics\Color.h(44): message : see declaration of 'sfColor'
+P:\Documents\Documents\sync\prog\C\csfml_framework\csfml_framework\sceneHandler.c(136,88): error C2146: syntax error: missing ';' before identifier 'c'
+P:\Documents\Documents\sync\prog\C\csfml_framework\csfml_framework\sceneHandler.c(136,89): error C2059: syntax error: ')'
+P:\Documents\Documents\sync\prog\C\csfml_framework\csfml_framework\sceneHandler.c(137,1): error C2054: expected '(' to follow 'c'
+P:\Documents\Documents\sync\prog\C\csfml_framework\csfml_framework\sceneHandler.c(156,31): error C2143: syntax error: missing ')' before '*'
+P:\Documents\Documents\sync\prog\C\csfml_framework\csfml_framework\sceneHandler.c(156,31): error C2143: syntax error: missing '{' before '*'
+P:\Documents\Documents\sync\prog\C\csfml_framework\csfml_framework\sceneHandler.c(156,36): error C2371: 'sfTexture': redefinition; different basic types
+P:\PortableApps\CommonFiles\CSFML-2.5\include\SFML\Graphics\Types.h(40): message : see declaration of 'sfTexture'
+P:\Documents\Documents\sync\prog\C\csfml_framework\csfml_framework\sceneHandler.c(156,45): error C2143: syntax error: missing ';' before '*'
+P:\Documents\Documents\sync\prog\C\csfml_framework\csfml_framework\sceneHandler.c(156,56): error C2371: 'sfVector2f': redefinition; different basic types
+P:\PortableApps\CommonFiles\CSFML-2.5\include\SFML\System\Vector2.h(64): message : see declaration of 'sfVector2f'
+P:\Documents\Documents\sync\prog\C\csfml_framework\csfml_framework\sceneHandler.c(156,67): error C2146: syntax error: missing ';' before identifier 'pos'
+P:\Documents\Documents\sync\prog\C\csfml_framework\csfml_framework\sceneHandler.c(156,70): error C2059: syntax error: ')'
+P:\Documents\Documents\sync\prog\C\csfml_framework\csfml_framework\sceneHandler.c(157,1): error C2054: expected '(' to follow 'pos'
+  Generating Code...
