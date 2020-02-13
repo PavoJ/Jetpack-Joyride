@@ -165,11 +165,12 @@ void gameLoop(sfRenderWindow* win, sfVideoMode vMode)
 
 		if (elapsedTick())
 		{
-			move(movingUp);
-			sfRectangleShape_setPosition(mainChar, (sfVector2f) { pl->position.x, 1080.f+ pl->position.y });
-			
+			moveVer(movingUp);
+			sfRectangleShape_setPosition(mainChar, (sfVector2f) { pl->position.x, pl->position.y });
+			/*
 			system("cls");
 			printf("%f - %f (%d)", pl->position.x, 1080.f-pl->position.y, movingUp);
+			*/
 		}
 
 		//sovrascrivo tutta la finestra con il colore bianco
@@ -189,8 +190,8 @@ int main ()
 
 	//imposto la dimensione della finestra
 	sfVideoMode vMode;
-	vMode.width = 1920;
-	vMode.height = 1080;
+	vMode.width = 800;
+	vMode.height = 600;
 
 	
 	//creazione della finestra
