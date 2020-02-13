@@ -22,7 +22,7 @@ int menu(sfRenderWindow* win, sfVideoMode vMode, sfColor clearColor, dynText sta
 	sfFloatRect playR;//per calcolare intersezioni tra il mouse e il testo
 
 	//finchè il giocatore non ha ancora scelto un tasto
-	while ((clickedButton==-1) && sfRenderWindow_isOpen(win))
+	while (/*(clickedButton==-1) && */sfRenderWindow_isOpen(win))
 	{
 		sfEvent event;
 		while (sfRenderWindow_pollEvent(win, &event))
@@ -42,10 +42,9 @@ int menu(sfRenderWindow* win, sfVideoMode vMode, sfColor clearColor, dynText sta
 					//se il mouse è sopra a del testo
 					if (sfFloatRect_contains(&playR, (float)mouse.x, (float)mouse.y))
 					{
-						sfText_setColor(statec->text, sfColor_fromRGB(70, 70, 150));
+						sfText_setColor(states[a].text, sfColor_fromRGB(70, 70, 150));
 						activeButton = a;
 					}
-					//se il mouse ha lasciato il testo
 					else if (activeButton == a)
 					{
 						sfText_setColor(statec->text, sfBlack);
@@ -137,7 +136,7 @@ void gameLoop(sfRenderWindow* win, sfVideoMode vMode)
 
 	player* pl = getP();
 	
-	//finch� la finestra � aperta
+	//finchè la finestra è aperta
 	while (sfRenderWindow_isOpen(win))
 	{
 		sfEvent event;
@@ -164,11 +163,12 @@ void gameLoop(sfRenderWindow* win, sfVideoMode vMode)
 
 		if (elapsedTick())
 		{
-			move(movingUp);
-			sfRectangleShape_setPosition(mainChar, (sfVector2f) { pl->position.x, 1080 - pl->position.y });
+			moveVer(movingUp);
+			sfRectangleShape_setPosition(mainChar, (sfVector2f) { pl->position.x, pl->position.y });
 			/*
 			system("cls");
-			printf("%d - %d (%d)", pl->position.x, 1080-pl->position.y, movingUp);*/
+			printf("%f - %f (%d)", pl->position.x, 1080.f-pl->position.y, movingUp);
+			*/
 		}
 
 		//sovrascrivo tutta la finestra con il colore bianco
@@ -188,22 +188,21 @@ int main ()
 
 	//imposto la dimensione della finestra
 	sfVideoMode vMode;
-	vMode.width = 1920;
-	vMode.height = 1080;
+	vMode.width = 800;
+	vMode.height = 600;
 
 	
 	//creazione della finestra
 	win = sfRenderWindow_create(vMode, "Jetpack vs. Zombies", sfClose, NULL);
-
-	dynText m;
+	/*
+	dynText* m = NULL;
 	sfVector2f pos;
 	int a, statec, iNum=0;
-	char totStates[5][3][20] = {
-		{"Gioca", "Fra ma sei sicuro?", '\0'},
-		{"Impostazioni", '\0'},
-		{"Crediti", '\0'},
-		{"Esci", '\0'},
-		{'\0'}};
+	char totStates[5][3][30] = {
+		{"Gioca", "heyy", NULL},
+		{"Impostazioni", NULL},
+		{"Crediti", NULL},
+		{"Esci", NULL}, NULL };
 	
 	while(totStates[iNum][0][0]!='\0') iNum++;
 	for(a=0 ; a<iNum ; a++)
@@ -213,9 +212,14 @@ int main ()
 		statec=0;
 		while(totStates[a][statec][0]!='\0') statec++;
 
-		txtHandler_appendText(&m, 70, pos, statec+1, totStates[a][0]);
+		txtHandler_appendText(m, 70, pos, statec+1, *totStates[a]);
 	}
+	*/
 
+	gameLoop(win, vMode);
+
+	inText* m;
+	int inp = menu(win, vMode, sfColor_fromRGB(150, 150, 150), 5, m);
 	
 	menu(win, vMode, sfColor_fromRGB(150, 150, 150), m);
 	/*
