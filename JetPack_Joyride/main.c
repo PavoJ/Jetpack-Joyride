@@ -1,139 +1,24 @@
+#include"csfml_framework/sceneHandler.c"
+#include"consts.h"
 #include"logica.c"
-#include"gameClock.c"
-#include"textHandler.c"
 
 #include <SFML\Graphics.h>
-#include <SFML\window.h>
 
 #include <stdio.h>
 #include <stdarg.h>
 #include <stdlib.h>
-#include <stdbool.h>
 
-int menu(sfRenderWindow* win, sfVideoMode vMode, sfColor clearColor, dynText states)
-{
-	int a;
-	int clickedButton = -1;//tasto scelto dal giocatore
-	int activeButton = -1;//tasto che ha il mouse sopra
-
-	dynText *statec = &states;//per ciclare tra il testo
-
-	sfVector2i mouse;//coordinate del mouse
-	sfFloatRect playR;//per calcolare intersezioni tra il mouse e il testo
-
-	//finchè il giocatore non ha ancora scelto un tasto
-	while (/*(clickedButton==-1) && */sfRenderWindow_isOpen(win))
-	{
-		sfEvent event;
-		while (sfRenderWindow_pollEvent(win, &event))
-		{
-			switch (event.type)
-			{
-			case sfEvtClosed:
-				sfRenderWindow_close(win);
-				break;
-			
-			case sfEvtMouseMoved:
-				while(statec != NULL)
-				{
-					mouse = sfMouse_getPositionRenderWindow(win);
-					playR = sfText_getGlobalBounds(statec->text);
-
-					//se il mouse è sopra a del testo
-					if (sfFloatRect_contains(&playR, (float)mouse.x, (float)mouse.y))
-					{
-						sfText_setColor(states[a].text, sfColor_fromRGB(70, 70, 150));
-						activeButton = a;
-					}
-					else if (activeButton == a)
-					{
-						sfText_setColor(statec->text, sfBlack);
-						activeButton = -1;
-					}
-					statec = statec->next;
-				}
-				statec = &states;
-				break;
-
-			case sfEvtMouseButtonPressed:
-				//se il giocatore clicca il tasto sinistro del mouse
-				if (sfMouse_isButtonPressed(sfMouseLeft))
-				{
-					//se ha il mouse sopra a del testo
-					if (activeButton != -1)
-					{
-						//TODO: da cambiare la parte commentata: non deve uscire subito, ma deve controllare
-						//se ci sono degli stati da ciclare
-						//clickedButton = activeButton;
-						while(activeButton!=0)
-						{
-							statec = statec->next;
-							activeButton--;
-						}
-						txtHandler_click(*statec);
-						statec = &states;
-						
-					}
-				}
-				break;
-			}
-		}
-
-		sfRenderWindow_clear(win, clearColor);
-
-		while (statec != NULL)
-		{
-			sfRenderWindow_drawText(win, statec->text, NULL);
-			statec = statec->next;
-		}
-		statec = &states;
-
-		sfRenderWindow_display(win);
-	}
-	return clickedButton;
-}
-
-void diagBox(sfRenderWindow* win, sfVideoMode vMode, char* diagText, int argc, ...)
-{
-	va_list list;
-	va_start(list, argc);
-
-	sfVector2f size = (sfVector2f){ vMode.width / 2, vMode.height / 2 };
-	sfRectangleShape* diag = sfRectangleShape_create();
-	sfRectangleShape_setSize(diag, size);
-	sfRectangleShape_setOrigin(diag, (sfVector2f) { size.x/2, size.y/2 });
-	sfRectangleShape_setPosition(diag, (sfVector2f) { vMode.width / 2, vMode.height / 2 });
-	sfRectangleShape_setFillColor(diag, sfBlack);
-
-	sfEvent event;
-	while (sfRenderWindow_isOpen(win))
-	{
-		while (sfRenderWindow_pollEvent(win, &event))
-		{
-			switch (event.type)
-			{
-			case sfClose:
-				sfRenderWindow_close(win);
-				break;
-			}
-		}
-		sfRenderWindow_clear(win, sfColor_fromRGB(150, 150, 150));
-
-		sfRenderWindow_drawRectangleShape(win, diag, NULL);
-
-		sfRenderWindow_display(win);
-	}
-
-}
-
-void gameLoop(sfRenderWindow* win, sfVideoMode vMode)
+void gameLoop(sfRenderWindow* win)
 {
 	sfRectangleShape* mainChar = sfRectangleShape_create();//Player
-	sfRectangleShape_setSize(mainChar, (sfVector2f) { 150, 200 });
+	sfRectangleShape_setSize(mainChar, (sfVector2f) { 150.f, playerHeight });
 	sfRectangleShape_setFillColor(mainChar, sfBlue);
 
-	bool movingUp = false;//se il tasto per andare su � tenuto premuto.
+	sfClock* clk = sfClock_create();
+	sfTime elapsedTime;
 
+	bool movingUp = false;//se il tasto per andare su è tenuto premuto.
+	
 	player* pl = getP();
 	
 	//finchè la finestra è aperta
@@ -161,17 +46,18 @@ void gameLoop(sfRenderWindow* win, sfVideoMode vMode)
 			}
 		}
 
-		if (elapsedTick())
+		elapsedTime = sfClock_getElapsedTime(clk);
+		if (sfTime_asMilliseconds(elapsedTime) > tick)
 		{
+			sfClock_restart(clk);
+
 			moveVer(movingUp);
-			sfRectangleShape_setPosition(mainChar, (sfVector2f) { pl->position.x, pl->position.y });
-			/*
-			system("cls");
-			printf("%f - %f (%d)", pl->position.x, 1080.f-pl->position.y, movingUp);
-			*/
+			sfRectangleShape_setPosition(mainChar, pl->position);
+			
+			//printf("%f - %f (%d)\n", pl->position.x, pl->position.y, movingUp);
+			
 		}
 
-		//sovrascrivo tutta la finestra con il colore bianco
 		sfRenderWindow_clear(win, sfColor_fromRGB(255, 255, 255));
 
 		sfRenderWindow_drawRectangleShape(win, mainChar, NULL);
@@ -181,58 +67,43 @@ void gameLoop(sfRenderWindow* win, sfVideoMode vMode)
 	}
 }
 
+//x è il numero del testo
+//y è il numero dele stringhe su schermo
+#define textPos(x, y)  (sfVector2f){winWidth/2, ((float)winHeight/y)*x}
+
 int main ()
 {
-	//dichiarazione della finestra
 	sfRenderWindow* win;
 
-	//imposto la dimensione della finestra
 	sfVideoMode vMode;
-	vMode.width = 800;
-	vMode.height = 600;
-
+	vMode.width = winWidth;
+	vMode.height = winHeight;
 	
-	//creazione della finestra
+	//creazione della finestra di dimensioni vMode
 	win = sfRenderWindow_create(vMode, "Jetpack vs. Zombies", sfClose, NULL);
-	/*
-	dynText* m = NULL;
-	sfVector2f pos;
-	int a, statec, iNum=0;
-	char totStates[5][3][30] = {
-		{"Gioca", "heyy", NULL},
-		{"Impostazioni", NULL},
-		{"Crediti", NULL},
-		{"Esci", NULL}, NULL };
 	
-	while(totStates[iNum][0][0]!='\0') iNum++;
-	for(a=0 ; a<iNum ; a++)
+	sfFont* defaultF = sfFont_createFromFile("defaultFont.ttf");
+	int fontSize = 70;
+	
+	scene* s;
+	
+	int inp;
+
+	bool playing = true;
+	while (playing)
 	{
-		pos = (sfVector2f){vMode.width/2, (vMode.height/iNum)*(a+1)};
+		s = newScene();
 
-		statec=0;
-		while(totStates[a][statec][0]!='\0') statec++;
+		shAppendText(s, textPos(1.f, 2.f), sfWhite, defaultF, fontSize, "Gioca");
+		shAppendText(s, textPos(2.f, 2.f), sfWhite, defaultF, fontSize, "mhh, yes.");
 
-		txtHandler_appendText(m, 70, pos, statec+1, *totStates[a]);
+		inp = shSceneLoop(s, win, vMode, sfColor_fromRGB(150, 150, 150));
+
+		switch (inp)
+		{
+		case 0://"Gioca"
+			gameLoop(win);
+			break;
+		}
 	}
-	*/
-
-	gameLoop(win, vMode);
-
-	inText* m;
-	int inp = menu(win, vMode, sfColor_fromRGB(150, 150, 150), 5, m);
-	
-	menu(win, vMode, sfColor_fromRGB(150, 150, 150), m);
-	/*
-	switch (inp)
-	{
-	case 0:
-		gameLoop(win, vMode);
-		break;
-	case 1:
-		x=menu(win, vMode, sfColor_fromRGB(150, 150, 150), 5,wepofrjw, wefjnwiejhf, weoiufh);
-		break;
-	case 2:
-		diagBox(win, vMode, "Are you sure about that?", 0);
-		break;
-	}*/
 }

@@ -13,19 +13,25 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Source Files\csfml_framework">
+      <UniqueIdentifier>{413d8df4-1d6c-47aa-b48d-35807b273262}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="gameClock.h">
-      <Filter>Header Files</Filter>
-    </ClCompile>
     <ClCompile Include="logica.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="logica.h">
-      <Filter>Header Files</Filter>
+    <ClCompile Include="diagBox.c">
+      <Filter>Source Files\csfml_framework</Filter>
+    </ClCompile>
+    <ClCompile Include="csfml_framework\sceneHandler.c">
+      <Filter>Source Files\csfml_framework</Filter>
+    </ClCompile>
+    <ClCompile Include="csfml_framework\dynText.c">
+      <Filter>Source Files\csfml_framework</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -34,7 +40,7 @@
     </Font>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="textHandler.h">
+    <ClInclude Include="consts.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

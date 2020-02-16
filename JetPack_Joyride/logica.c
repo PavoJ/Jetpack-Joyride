@@ -1,40 +1,24 @@
-// /*
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdbool.h>
+
+#include<SFML\System.h>
+
 #include <time.h>
 
-/* valori esterni dipendenti dalla finestra di gioco */
-#define coordMaxY 560
-#define coordMinY 40.
-#define playerHeight 200.
+#include "consts.h"
 
 /* costanti di quando ti muovi verso l'alto */
-#define jpInitialVelocity 5. /* velocità iniziale */
-#define jpTerminalVelocity 20. /* velocità massima che si può raggiungere */
-#define jpSoftness 20. /* gradualità per cui si passa da velocità iniziale a finale */
+#define jpInitialVelocity 5.f /* velocità iniziale */
+#define jpTerminalVelocity 20.f /* velocità massima che si può raggiungere */
+#define jpSoftness 20.f /* gradualità per cui si passa da velocità iniziale a finale */
 
 /* costanti di quando ti muovi verso il basso */
-#define grInitialVelocity 0. /* velocità iniziale */
-#define grTerminalVelocity -50. /* velocità massima che si può raggiungere */
-#define grSoftness 30. /* gradualità per cui si passa da velocità iniziale a finale */
+#define grInitialVelocity 0.f /* velocità iniziale */
+#define grTerminalVelocity -50.f /* velocità massima che si può raggiungere */
+#define grSoftness 30.f /* gradualità per cui si passa da velocità iniziale a finale */
 
 #define jpVelocityFunction(x) x / (x + 1)
 #define grVelocityFunction(x) x
-
-typedef struct
-{
-	float x;
-	float y;
-} coords;
-
-typedef struct
-{
-	coords position;
-	float velocity;
-	bool oldMoveUp;
-
-} player;
 
 player* getP()
 {
@@ -43,8 +27,8 @@ player* getP()
 
 	if (!setup)
 	{
-		p.position.x = 130.;
-		p.position.y = 10.;
+		p.position.x = 130.f;
+		p.position.y = 10.f;
 		p.velocity = 0;
 
 		setup = true;
@@ -56,6 +40,7 @@ player* getP()
 void moveVer(bool moveUp)
 {
 	player* p = getP();
+
 	static int delta;
 	static bool oldMoveUp;
 
