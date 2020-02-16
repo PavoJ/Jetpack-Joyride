@@ -3,15 +3,15 @@
 
 #include<stdbool.h>
 
-#define tick 100 //millisecondi
+#define tick 35 //millisecondi
 
 #define winWidth 1920
 #define winHeight 1080
 
 /* valori esterni dipendenti dalla finestra di gioco */
-#define coordMaxY (float)winWidth/25.f
-#define coordMinY (float)winHeight/25.f
-#define playerHeight 200.f
+#define coordMaxY (winHeight-(float)winHeight/25.f)
+#define coordMinY ((float)winHeight/25.f)
+#define playerHeight 150.f
 
 typedef struct
 {

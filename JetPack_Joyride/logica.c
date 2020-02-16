@@ -4,8 +4,14 @@
 #include<SFML\System.h>
 
 #include <time.h>
+#include <math.h>
 
 #include "consts.h"
+
+#define bgCount ceil((float) winWidth / bgDim.x) + 1 // numero di sfondi su schermo
+
+#define horScreenVelocity 15// velocità di scroll dello schermo
+#define stageLength 1000 //lunghezza di uno stadio all'interno di un livello
 
 /* costanti di quando ti muovi verso l'alto */
 #define jpInitialVelocity 5.f /* velocità iniziale */
@@ -35,6 +41,35 @@ player* getP()
 	}
 
 	return &p;
+}
+
+void drawBackground(sfRenderWindow* win, sfTexture* bgTexture, unsigned int score)
+{
+	const sfVector2u bgUIDim = sfTexture_getSize(bgTexture);;
+	const sfVector2f bgDim = (sfVector2f){ bgUIDim.x, bgUIDim.y };
+	
+	sfRectangleShape* bg = sfRectangleShape_create();
+	sfRectangleShape_setTexture(bg, bgTexture, false);
+	sfRectangleShape_setSize(bg, bgDim);
+
+	
+
+	float i, x;
+    for (i = 0.f; i < bgCount; i++)
+    {
+        x = (i * bgDim.x) - (float)(score % (int) bgDim.x);
+
+		sfRectangleShape_setPosition(bg, (sfVector2f) {x, 0});
+		sfRenderWindow_drawRectangleShape(win, bg, NULL);
+    }
+	sfRectangleShape_destroy(bg);
+}
+
+void moveHor(unsigned int* score, unsigned int* stage)
+{
+	(*score) += horScreenVelocity;
+	if (!((*score) % stageLength))
+		(*stage)++;
 }
 
 void moveVer(bool moveUp)

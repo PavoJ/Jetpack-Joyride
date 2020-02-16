@@ -10,9 +10,12 @@
 
 void gameLoop(sfRenderWindow* win)
 {
+	sfTexture* bgTexture = sfTexture_createFromFile("Untitled.jpg", NULL);
+	sfTexture* playerTexture = sfTexture_createFromFile("Player.png", NULL);
+
 	sfRectangleShape* mainChar = sfRectangleShape_create();//Player
-	sfRectangleShape_setSize(mainChar, (sfVector2f) { 150.f, playerHeight });
-	sfRectangleShape_setFillColor(mainChar, sfBlue);
+	sfRectangleShape_setSize(mainChar, (sfVector2f) { 100.f, playerHeight });
+	sfRectangleShape_setTexture(mainChar, playerTexture, 0);
 
 	sfClock* clk = sfClock_create();
 	sfTime elapsedTime;
@@ -20,6 +23,9 @@ void gameLoop(sfRenderWindow* win)
 	bool movingUp = false;//se il tasto per andare su è tenuto premuto.
 	
 	player* pl = getP();
+
+	unsigned int score = 0;//tiene conto della distanza percorsa orizzontalmente aka l'avanzamento dei giocatori nel livello
+	unsigned int stage = 1;//tiene conto dello stadio a cui si trovano i giocatori nel livello
 	
 	//finchè la finestra è aperta
 	while (sfRenderWindow_isOpen(win))
@@ -51,15 +57,17 @@ void gameLoop(sfRenderWindow* win)
 		{
 			sfClock_restart(clk);
 
+			moveHor(&score, &stage);
 			moveVer(movingUp);
+
 			sfRectangleShape_setPosition(mainChar, pl->position);
 			
 			//printf("%f - %f (%d)\n", pl->position.x, pl->position.y, movingUp);
-			
 		}
 
-		sfRenderWindow_clear(win, sfColor_fromRGB(255, 255, 255));
+		sfRenderWindow_clear(win, sfWhite);
 
+		drawBackground(win, bgTexture, score);
 		sfRenderWindow_drawRectangleShape(win, mainChar, NULL);
 
 		//disegno i cambiamenti su schermo
@@ -103,6 +111,7 @@ int main ()
 		{
 		case 0://"Gioca"
 			gameLoop(win);
+			playing = false;
 			break;
 		}
 	}
