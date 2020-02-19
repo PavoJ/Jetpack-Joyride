@@ -11,6 +11,8 @@
 /* valori esterni dipendenti dalla finestra di gioco */
 #define coordMaxY (winHeight-(float)winHeight/25.f)
 #define coordMinY ((float)winHeight/25.f)
+
+#define playerWidth 100.f
 #define playerHeight 150.f
 
 typedef struct

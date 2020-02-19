@@ -10,12 +10,23 @@
 
 void gameLoop(sfRenderWindow* win)
 {
+	//texture
 	sfTexture* bgTexture = sfTexture_createFromFile("Untitled.jpg", NULL);
 	sfTexture* playerTexture = sfTexture_createFromFile("Player.png", NULL);
+	//sfTexture* obsTexture = sfTexture_createFromFile("Obstacle.png", NULL);
 
+	//giocatore
 	sfRectangleShape* mainChar = sfRectangleShape_create();//Player
-	sfRectangleShape_setSize(mainChar, (sfVector2f) { 100.f, playerHeight });
+	sfRectangleShape_setSize(mainChar, (sfVector2f) { playerWidth, playerHeight });
 	sfRectangleShape_setTexture(mainChar, playerTexture, 0);
+	
+	//sfondo
+	sfRectangleShape* bg = sfRectangleShape_create();
+	sfRectangleShape_setSize(bg, (sfVector2f) { winWidth, winHeight });
+	sfRectangleShape_setTexture(bg, bgTexture, false);
+
+	//sfRectangleShape* obs = sfRectangleShape_create();
+	//sfRectangleShape_setTexture(obs, obsTexture, true);
 
 	sfClock* clk = sfClock_create();
 	sfTime elapsedTime;
@@ -24,11 +35,12 @@ void gameLoop(sfRenderWindow* win)
 	
 	player* pl = getP();
 
-	unsigned int score = 0;//tiene conto della distanza percorsa orizzontalmente aka l'avanzamento dei giocatori nel livello
+	unsigned int score = 0;//tiene conto della distanza percorsa orizzontalmente
 	unsigned int stage = 1;//tiene conto dello stadio a cui si trovano i giocatori nel livello
 	
+	bool playing = true;
 	//finchè la finestra è aperta
-	while (sfRenderWindow_isOpen(win))
+	while (sfRenderWindow_isOpen(win) && playing)
 	{
 		sfEvent event;
 		while (sfRenderWindow_pollEvent(win, &event))//ciclo tra tutti gli eventi accumulati
@@ -43,6 +55,8 @@ void gameLoop(sfRenderWindow* win)
 			case sfEvtKeyPressed:
 				if (sfKeyboard_isKeyPressed(sfKeySpace))
 					movingUp = true;
+				else if (sfKeyboard_isKeyPressed(sfKeyEscape))
+					playing = false;
 				break;
 
 			case sfEvtKeyReleased:
@@ -67,12 +81,22 @@ void gameLoop(sfRenderWindow* win)
 
 		sfRenderWindow_clear(win, sfWhite);
 
-		drawBackground(win, bgTexture, score);
+		drawBackground(win, bg, score);
 		sfRenderWindow_drawRectangleShape(win, mainChar, NULL);
 
 		//disegno i cambiamenti su schermo
 		sfRenderWindow_display(win);
 	}
+
+	sfTexture_destroy(bgTexture);
+	sfTexture_destroy(playerTexture);
+	//sfTexture_destroy(obsTexture);
+
+	sfRectangleShape_destroy(mainChar);
+	sfRectangleShape_destroy(bg);
+	//sfRectangleShape_destroy(obs);
+
+	sfClock_destroy(clk);
 }
 
 //x è il numero del testo
@@ -89,7 +113,8 @@ int main ()
 	
 	//creazione della finestra di dimensioni vMode
 	win = sfRenderWindow_create(vMode, "Jetpack vs. Zombies", sfClose, NULL);
-	
+	//sfRenderWindow_setFramerateLimit(win, 61);
+
 	sfFont* defaultF = sfFont_createFromFile("defaultFont.ttf");
 	int fontSize = 70;
 	
@@ -106,12 +131,13 @@ int main ()
 		shAppendText(s, textPos(2.f, 2.f), sfWhite, defaultF, fontSize, "mhh, yes.");
 
 		inp = shSceneLoop(s, win, vMode, sfColor_fromRGB(150, 150, 150));
+		shSceneDestroy(s);
 
 		switch (inp)
 		{
 		case 0://"Gioca"
 			gameLoop(win);
-			playing = false;
+			//playing = false;
 			break;
 		}
 	}

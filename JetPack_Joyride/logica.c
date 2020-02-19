@@ -43,26 +43,18 @@ player* getP()
 	return &p;
 }
 
-void drawBackground(sfRenderWindow* win, sfTexture* bgTexture, unsigned int score)
+void drawBackground(sfRenderWindow* win, sfRectangleShape* bg, unsigned int score)
 {
-	const sfVector2u bgUIDim = sfTexture_getSize(bgTexture);;
-	const sfVector2f bgDim = (sfVector2f){ bgUIDim.x, bgUIDim.y };
-	
-	sfRectangleShape* bg = sfRectangleShape_create();
-	sfRectangleShape_setTexture(bg, bgTexture, false);
-	sfRectangleShape_setSize(bg, bgDim);
-
-	
+	sfVector2f bgDim = sfRectangleShape_getSize(bg);
 
 	float i, x;
     for (i = 0.f; i < bgCount; i++)
     {
-        x = (i * bgDim.x) - (float)(score % (int) bgDim.x);
+        x = (i * bgDim.x) - (float)(score % (int)bgDim.x);
 
-		sfRectangleShape_setPosition(bg, (sfVector2f) {x, 0});
+		sfRectangleShape_setPosition(bg, (sfVector2f){x, 0});
 		sfRenderWindow_drawRectangleShape(win, bg, NULL);
     }
-	sfRectangleShape_destroy(bg);
 }
 
 void moveHor(unsigned int* score, unsigned int* stage)

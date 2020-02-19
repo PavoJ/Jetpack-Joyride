@@ -1,3 +1,2 @@
 ﻿  main.c
-P:\Documents\Documents\sync\prog\C\JetPack_Joyride\JetPack_Joyride\logica.c(49,1): warning C4244: 'initializing': conversion from 'const unsigned int' to 'float', possible loss of data
   JetPack_Joyride.vcxproj -> P:\Documents\Documents\sync\prog\C\JetPack_Joyride\Debug\JetPack_Joyride.exe

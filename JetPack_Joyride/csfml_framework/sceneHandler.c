@@ -164,7 +164,6 @@ int shSceneLoop(scene* s, sfRenderWindow* win, sfVideoMode vMode, sfColor clearC
 					}
 				}
 				break;
-
 			}
 		}
 
@@ -301,4 +300,37 @@ sfSprite* shAppendSprite(scene* s, sfTexture* texture, sfVector2f pos)
 	sfSprite_setPosition(Sptmp, pos);
 
 	return Sptmp;
+}
+
+void shSceneDestroy(scene* s)
+{
+	scene* Stmp;
+	union shSceneT* STtmp;
+
+	while (s != NULL)
+	{
+		Stmp = s;
+		s = s->next;
+
+		STtmp = &Stmp->T;
+		switch (Stmp->type)
+		{
+		case dTxt:
+			free(STtmp->dynText->states);
+			sfText_destroy(STtmp->dynText->sText.text);
+			free(STtmp->dynText);
+			break;
+		case sTxt:
+			sfText_destroy(STtmp->sText->text);
+			free(STtmp->sText);
+			break;
+		case rec:
+			sfRectangleShape_destroy(STtmp->rect);
+			break;
+		case spr:
+			sfSprite_destroy(STtmp->sprite);
+			break;
+		}
+		free(Stmp);
+	}
 }
