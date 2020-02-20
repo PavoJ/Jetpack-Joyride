@@ -34,7 +34,7 @@ player* getP()
 	if (!setup)
 	{
 		p.position.x = 130.f;
-		p.position.y = 10.f;
+		p.position.y = coordMaxY - playerHeight;
 		p.velocity = 0;
 
 		setup = true;

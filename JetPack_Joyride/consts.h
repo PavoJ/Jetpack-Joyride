@@ -5,15 +5,15 @@
 
 #define tick 35 //millisecondi
 
-#define winWidth 1920
-#define winHeight 1080
+#define winWidth 960
+#define winHeight 540
 
 /* valori esterni dipendenti dalla finestra di gioco */
 #define coordMaxY (winHeight-(float)winHeight/25.f)
 #define coordMinY ((float)winHeight/25.f)
 
-#define playerWidth 100.f
-#define playerHeight 150.f
+#define playerWidth 60.f
+#define playerHeight 90.f
 
 typedef struct
 {

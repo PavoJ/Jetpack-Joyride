@@ -10,8 +10,10 @@
 
 void gameLoop(sfRenderWindow* win)
 {
+	player* pl = getP();
+
 	//texture
-	sfTexture* bgTexture = sfTexture_createFromFile("Untitled.jpg", NULL);
+	sfTexture* bgTexture = sfTexture_createFromFile("basicbg.png", NULL);
 	sfTexture* playerTexture = sfTexture_createFromFile("Player.png", NULL);
 	//sfTexture* obsTexture = sfTexture_createFromFile("Obstacle.png", NULL);
 
@@ -19,6 +21,7 @@ void gameLoop(sfRenderWindow* win)
 	sfRectangleShape* mainChar = sfRectangleShape_create();//Player
 	sfRectangleShape_setSize(mainChar, (sfVector2f) { playerWidth, playerHeight });
 	sfRectangleShape_setTexture(mainChar, playerTexture, 0);
+	sfRectangleShape_setPosition(mainChar, pl->position);
 	
 	//sfondo
 	sfRectangleShape* bg = sfRectangleShape_create();
@@ -32,8 +35,6 @@ void gameLoop(sfRenderWindow* win)
 	sfTime elapsedTime;
 
 	bool movingUp = false;//se il tasto per andare su è tenuto premuto.
-	
-	player* pl = getP();
 
 	unsigned int score = 0;//tiene conto della distanza percorsa orizzontalmente
 	unsigned int stage = 1;//tiene conto dello stadio a cui si trovano i giocatori nel livello
@@ -101,7 +102,7 @@ void gameLoop(sfRenderWindow* win)
 
 //x è il numero del testo
 //y è il numero dele stringhe su schermo
-#define textPos(x, y)  (sfVector2f){winWidth/2, ((float)winHeight/y)*x}
+#define textPos(x, y)  (sfVector2f){winWidth/2, ((float)winHeight/(y+2))*x}
 
 int main ()
 {
@@ -115,10 +116,18 @@ int main ()
 	win = sfRenderWindow_create(vMode, "Jetpack vs. Zombies", sfClose, NULL);
 	//sfRenderWindow_setFramerateLimit(win, 61);
 
+	player* p = getP();
+
 	sfFont* defaultF = sfFont_createFromFile("defaultFont.ttf");
 	int fontSize = 70;
 	
 	scene* s;
+
+	sfTexture* mCT = sfTexture_createFromFile("Player.png", NULL);
+	sfTexture* bgT = sfTexture_createFromFile("basicbg.png", NULL);
+
+	sfRectangleShape* mainChar;
+	sfRectangleShape* bg;
 	
 	int inp;
 
@@ -127,15 +136,21 @@ int main ()
 	{
 		s = newScene();
 
+		bg = shAppendRectangleS(s, (sfVector2f) { 0, 0 }, (sfVector2f) {winWidth, winHeight});
+		sfRectangleShape_setTexture(bg, bgT, false);
+
+		mainChar = shAppendRectangleS(s, p->position, (sfVector2f) { playerWidth, playerHeight });
+		sfRectangleShape_setTexture(mainChar, mCT, false);
+
 		shAppendText(s, textPos(1.f, 2.f), sfWhite, defaultF, fontSize, "Gioca");
-		shAppendText(s, textPos(2.f, 2.f), sfWhite, defaultF, fontSize, "mhh, yes.");
+		shAppendDynText(s, textPos(2.f, 2.f), sfWhite, defaultF, fontSize, 2, "mhh, yes.", "Enslaved menus");
 
 		inp = shSceneLoop(s, win, vMode, sfColor_fromRGB(150, 150, 150));
 		shSceneDestroy(s);
 
 		switch (inp)
 		{
-		case 0://"Gioca"
+		case 2://"Gioca"
 			gameLoop(win);
 			//playing = false;
 			break;

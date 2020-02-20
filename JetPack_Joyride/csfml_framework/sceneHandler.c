@@ -178,7 +178,7 @@ int shSceneLoop(scene* s, sfRenderWindow* win, sfVideoMode vMode, sfColor clearC
 void shCenterText(sfText* t)
 {
 	sfFloatRect FRtmp = sfText_getLocalBounds(t);
-	sfVector2f pos = (sfVector2f){ FRtmp.width / 2.f, -FRtmp.height / 2.f };
+	sfVector2f pos = (sfVector2f){ FRtmp.width / 2.f, FRtmp.height / 2.f };
 
 	sfText_setOrigin(t, pos);
 }
@@ -201,10 +201,10 @@ dtDynText* shAppendDynText(scene* s, sfVector2f pos, sfColor color, sfFont* font
 		{
 			sfText* Ttmp = DTtmp->sText.text;
 
-			shCenterText(Ttmp);
 			sfText_setPosition(Ttmp, pos);
 			sfText_setFont(Ttmp, font);
 			sfText_setCharacterSize(Ttmp, textSize);
+			shCenterText(Ttmp);
 
 			sfText_setFillColor(Ttmp, color);
 			DTtmp->sText.defaultColor = color;
@@ -253,11 +253,11 @@ sfText* shAppendText(scene* s, sfVector2f pos, sfColor color, sfFont* font, unsi
 		STtemp->text = sfText_create();
 		Ttmp = STtemp->text;
 
-		shCenterText(Ttmp);
 		sfText_setPosition(Ttmp, pos);
 		sfText_setFont(Ttmp, font);
 		sfText_setCharacterSize(Ttmp, textSize);
 		sfText_setString(Ttmp, str);
+		shCenterText(Ttmp);
 
 		sfText_setFillColor(Ttmp, color);
 		STtemp->defaultColor = color;
@@ -269,15 +269,15 @@ sfText* shAppendText(scene* s, sfVector2f pos, sfColor color, sfFont* font, unsi
 //esegue un append di un rettangolo alla scena s
 //pos è la coordinata del rettangolo, come origine ha il punto in alto a sinistra
 //dim è la larghezza ed altezza del rettangolo
-sfRectangleShape* shAppendRectangleS(scene* s, sfVector2f pos, sfVector2f dim, sfColor c)
+sfRectangleShape* shAppendRectangleS(scene* s, sfVector2f pos, sfVector2f dim)
 {
 	scene* Stmp = shSetLast(s);
 	
 	Stmp->type = rec;
-	
+
+	Stmp->T.rect = sfRectangleShape_create();
 	sfRectangleShape* RStmp = Stmp->T.rect;
-	RStmp = sfRectangleShape_create();
-	sfRectangleShape_setFillColor(RStmp, c);
+	
 	sfRectangleShape_setSize(RStmp, dim);
 	sfRectangleShape_setPosition(RStmp, pos);
 	
