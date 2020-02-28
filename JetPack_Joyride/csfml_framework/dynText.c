@@ -1,4 +1,9 @@
-//#include"csfml_framework.h"
+/*
+	DynText è un oggetto di testo dinamico
+	è un espansione al concetto di testo di CSFML sfText, in quanto non contiene solo una stringa,
+	ma più stringhe che ciclano se una condizione è avverata (Per gli scopi di questo programma lo usiamo principalmente
+		se il giocatore clicca il testo).
+*/
 
 #include<SFML\Graphics.h>
 
@@ -57,22 +62,26 @@ dtDynTextCh* dtDynTextChAppend(dtDynTextCh* DT, const char* str)
 	return DT;
 }
 
+void shCenterText(sfText* t);
+
 void dtDynTextUpdate(dtDynText* DTTC)
 {
 	dtDynTextCh* DTCtmp = DTTC->states;
 
+	//arrivo allo stato corrente
 	int Ctmp;
 	for (Ctmp = DTTC->state; Ctmp != 0; Ctmp--)
 		DTCtmp = DTCtmp->next;
 
+	//aumento lo stato di 1
 	DTTC->state++;
-
-	if (DTCtmp->next == NULL)
+	if (DTCtmp->next == NULL)//se gli stati sono finiti
 	{
+		//vado al primo stato
 		DTCtmp = DTTC->states;
 		DTTC->state = 0;
 	}
-		
-	if(DTCtmp != NULL)
-		sfText_setString(DTTC->sText.text, DTCtmp->ctxt);
+
+	sfText_setString(DTTC->sText.text, DTCtmp->ctxt);
+	shCenterText(DTTC->sText.text);
 }

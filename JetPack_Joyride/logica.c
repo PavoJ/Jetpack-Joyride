@@ -9,9 +9,12 @@
 #include "consts.h"
 
 #define bgCount ceil((float) winWidth / bgDim.x) + 1 // numero di sfondi su schermo
+#define obsCount (int) ceil((float) winWidth / minDelta) + 2 // numero massimom di ostacoli su schermo
 
-#define horScreenVelocity 15// velocità di scroll dello schermo
-#define stageLength 1000 //lunghezza di uno stadio all'interno di un livello
+/* costanti di scroll dello schermo */
+#define bgInitialVelocity 15.f /* velocità iniziale */
+#define bgTerminalVelocity 35.f /* velocità massima che si può raggiungere */
+#define bgSoftness 20.f /* gradualità per cui si passa da velocità iniziale a finale */
 
 /* costanti di quando ti muovi verso l'alto */
 #define jpInitialVelocity 5.f /* velocità iniziale */
@@ -23,15 +26,14 @@
 #define grTerminalVelocity -50.f /* velocità massima che si può raggiungere */
 #define grSoftness 30.f /* gradualità per cui si passa da velocità iniziale a finale */
 
+#define bgVelocityFunction(x) x / (x + 1)
 #define jpVelocityFunction(x) x / (x + 1)
 #define grVelocityFunction(x) x
 
 #define PLAYER_OFFSET 720
 
-#define maxDelta winWidth/5
-#define minDelta winWidth/7
-
-#define obsCount (int) ceil((float) winWidth / minDelta) + 2
+#define maxDelta winWidth/5 // massima distanza fra due ostacoli
+#define minDelta winWidth/7 // minima distanza fra due ostacoli
 
 typedef struct
 {
@@ -66,15 +68,14 @@ void drawBackground(sfRenderWindow* win, sfRectangleShape* bg, int score)
 	sfVector2f bgDim = sfRectangleShape_getSize(bg);
 
 	float i, x;
-    for (i = 0.f; i < bgCount; i++)
-    {
-        x = (i * bgDim.x) - (float)(score % (int)bgDim.x);
+	for (i = 0.f; i < bgCount; i++)
+	{
+		x = (i * bgDim.x) - (float)(score % (int)bgDim.x);
 
-		sfRectangleShape_setPosition(bg, (sfVector2f){x, 0});
+		sfRectangleShape_setPosition(bg, (sfVector2f) { x, 0 });
 		sfRenderWindow_drawRectangleShape(win, bg, NULL);
-    }
+	}
 }
-
 
 obsInfo* getObsInfo()
 {
@@ -84,7 +85,7 @@ obsInfo* getObsInfo()
 	if (!setup)
 	{
 		int i;
-		d.obs = malloc((obsCount) * sizeof(obstacle));
+		d.obs = malloc(obsCount * sizeof(obstacle));
 		if (d.obs != NULL)
 		{
 			d.lastPos.x = winWidth; // la posizione dell'ultimo ostacolo generato
@@ -123,7 +124,7 @@ void drawObs(sfRenderWindow* win, sfRectangleShape* obsRect, int score)
 	{
 		deltaPos = rand() % (maxDelta - minDelta) + minDelta;
 		newPos.x = lastPos->x + deltaPos;
-		newPos.y = rand() % (int) (coordMaxY - coordMinY) + coordMinY;
+		newPos.y = rand() % (int)(coordMaxY - coordMinY) + coordMinY;
 
 		// Inserisce il nuovo ostacolo nel primo "posto libero"
 		i = 0;
@@ -146,11 +147,9 @@ void drawObs(sfRenderWindow* win, sfRectangleShape* obsRect, int score)
 	}
 }
 
-void moveHor(int* score, int* stage)
+void moveHor(int* score)
 {
-	(*score) += horScreenVelocity;
-	if (!((*score) % stageLength))
-		(*stage)++;
+	(*score) += (bgTerminalVelocity - bgInitialVelocity) * bgVelocityFunction(*score / bgSoftness) + bgInitialVelocity;
 }
 
 void moveVer(bool moveUp)
@@ -170,7 +169,7 @@ void moveVer(bool moveUp)
 	if (moveUp)
 		p->velocity = (jpTerminalVelocity - jpInitialVelocity) * jpVelocityFunction(delta / jpSoftness) + jpInitialVelocity;
 	else
-		p->velocity = (grTerminalVelocity - grInitialVelocity) * jpVelocityFunction(delta / grSoftness) + grInitialVelocity;
+		p->velocity = (grVelocityFunction(delta) / grSoftness) + grInitialVelocity;
 
 	p->position.y -= p->velocity;
 
@@ -186,4 +185,14 @@ void moveVer(bool moveUp)
 		delta = 0;
 	}
 
+}
+
+void writeScore(unsigned int score, FILE* fp) {
+	fprintf_s(fp, "%d", score);
+}
+
+unsigned int readScore(FILE* fp) {
+	unsigned int r;
+	fscanf_s(fp, "%d", &r);
+	return r;
 }

@@ -1,3 +1,8 @@
+/*
+	scene è una lista contenente gli elementi che compongono una schermata (menù principale, impostazioni, gioco...)
+	il tipo scene non va confuso con una pila, dato che non contiene operazioni di pop.
+*/
+
 //#include"csfml_framework.h"
 #include"dynText.c"
 
@@ -5,6 +10,7 @@
 
 #include<stdarg.h>
 #include<stdlib.h>
+#include<stdbool.h>
 
 //Componenti di una scena
 
@@ -29,10 +35,11 @@ typedef struct scene
 {
 	enum shSceneE type;
 	union shSceneT T;
+	bool draw;
 	struct scene* next;
 } scene;
 
-scene* newScene()
+scene* shNewScene()
 {
 	scene* Stmp = malloc(sizeof(scene));
 	if (Stmp != NULL)
@@ -53,7 +60,7 @@ scene* shSetLast(scene* s)
 {
 	while (s->type != empty) s = s->next;
 
-	s->next = newScene();
+	s->next = shNewScene();
 
 	return s;
 }
@@ -64,21 +71,23 @@ void shRenderScene(scene* s, sfRenderWindow* win)
 	while (s->type != empty)
 	{
 		Stype = s->T;
-		switch (s->type)
-		{
-		case dTxt:
-			sfRenderWindow_drawText(win, Stype.dynText->sText.text, NULL);
-			break;
-		case sTxt:
-			sfRenderWindow_drawText(win, Stype.sText->text, NULL);
-			break;
-		case rec:
-			sfRenderWindow_drawRectangleShape(win, Stype.rect, NULL);
-			break;
-		case spr:
-			sfRenderWindow_drawSprite(win, Stype.sprite, NULL);
-			break;
-		}
+
+		if(s->draw)
+			switch (s->type)
+			{
+			case dTxt:
+				sfRenderWindow_drawText(win, Stype.dynText->sText.text, NULL);
+				break;
+			case sTxt:
+				sfRenderWindow_drawText(win, Stype.sText->text, NULL);
+				break;
+			case rec:
+				sfRenderWindow_drawRectangleShape(win, Stype.rect, NULL);
+				break;
+			case spr:
+				sfRenderWindow_drawSprite(win, Stype.sprite, NULL);
+				break;
+			}
 
 		s = s->next;
 	}
@@ -183,10 +192,20 @@ void shCenterText(sfText* t)
 	sfText_setOrigin(t, pos);
 }
 
-dtDynText* shAppendDynText(scene* s, sfVector2f pos, sfColor color, sfFont* font, unsigned int textSize, int argc, ...)
+//esegue un append ad una scena s un elemento di testo dinamico (vedi dynText.c)
+//pos è la positione del testo
+//color è il colore del testo
+//font è il font del testo
+//textSize è la dimensione del testo
+//drawOnRender determina se l'oggetto deve essere disegnato dalla funzione shRenderScene
+//argc è il numero di stati che può assumere il testo
+//di seguito vanno inserite stringhe di numero argc, sono i vari stati che può assumere il testo
+dtDynText* shAppendDynText(scene* s, sfVector2f pos, sfColor color, sfFont* font, unsigned int textSize, bool drawOnRender, int argc, ...)
 {
 	scene* Stmp = shSetLast(s);
+
 	Stmp->type = dTxt;
+	Stmp->draw = drawOnRender;
 	
 	Stmp->T.dynText = malloc(sizeof(dtDynText));
 	dtDynText* DTtmp = Stmp->T.dynText;
@@ -196,25 +215,18 @@ dtDynText* shAppendDynText(scene* s, sfVector2f pos, sfColor color, sfFont* font
 		DTtmp->stateT = argc;
 		DTtmp->state = 1;
 		
+
+
 		DTtmp->sText.text = sfText_create();
 		if (DTtmp->sText.text != NULL)
 		{
 			sfText* Ttmp = DTtmp->sText.text;
 
-			sfText_setPosition(Ttmp, pos);
-			sfText_setFont(Ttmp, font);
-			sfText_setCharacterSize(Ttmp, textSize);
-			shCenterText(Ttmp);
-
-			sfText_setFillColor(Ttmp, color);
-			DTtmp->sText.defaultColor = color;
-
+			//inserisco la lista di stati nelle variabili apposite
 			va_list list;
 			va_start(list, argc);
-
 			char* STRtmp;
 			int a;
-
 			DTtmp->states = malloc(sizeof(dtDynTextCh));
 			if (DTtmp->states != NULL)
 			{
@@ -228,8 +240,16 @@ dtDynText* shAppendDynText(scene* s, sfVector2f pos, sfColor color, sfFont* font
 
 				sfText_setString(Ttmp, DTtmp->states->ctxt);
 			}
-
 			va_end(list);
+			
+			//imposto il testo
+			sfText_setPosition(Ttmp, pos);
+			sfText_setFont(Ttmp, font);
+			sfText_setCharacterSize(Ttmp, textSize);
+			shCenterText(Ttmp);
+
+			sfText_setFillColor(Ttmp, color);
+			DTtmp->sText.defaultColor = color;
 		}
 	}
 	return DTtmp;
@@ -239,10 +259,13 @@ dtDynText* shAppendDynText(scene* s, sfVector2f pos, sfColor color, sfFont* font
 //pos è la coordinata del testo, il testo viene centrato automaticamente
 //font è il font utilizzato
 //textSize è la dimensione del testo su schermo
-sfText* shAppendText(scene* s, sfVector2f pos, sfColor color, sfFont* font, unsigned int textSize, const char* str)
+//drawOnRender determina se l'oggetto deve essere disegnato dalla funzione shRenderScene
+sfText* shAppendText(scene* s, sfVector2f pos, sfColor color, sfFont* font, unsigned int textSize, const char* str, bool drawOnRender)
 {
 	scene* Stmp = shSetLast(s);
+
 	Stmp->type = sTxt;
+	Stmp->draw = drawOnRender;
 
 	sfText* Ttmp = NULL;
 
@@ -269,15 +292,17 @@ sfText* shAppendText(scene* s, sfVector2f pos, sfColor color, sfFont* font, unsi
 //esegue un append di un rettangolo alla scena s
 //pos è la coordinata del rettangolo, come origine ha il punto in alto a sinistra
 //dim è la larghezza ed altezza del rettangolo
-sfRectangleShape* shAppendRectangleS(scene* s, sfVector2f pos, sfVector2f dim)
+//drawOnRender determina se l'oggetto deve essere disegnato dalla funzione shRenderScene
+sfRectangleShape* shAppendRectangleS(scene* s, sfVector2f pos, sfVector2f dim, bool drawOnRender)
 {
 	scene* Stmp = shSetLast(s);
 	
 	Stmp->type = rec;
+	Stmp->draw = drawOnRender;
 
 	Stmp->T.rect = sfRectangleShape_create();
 	sfRectangleShape* RStmp = Stmp->T.rect;
-	
+
 	sfRectangleShape_setSize(RStmp, dim);
 	sfRectangleShape_setPosition(RStmp, pos);
 	
@@ -288,11 +313,13 @@ sfRectangleShape* shAppendRectangleS(scene* s, sfVector2f pos, sfVector2f dim)
 //texture è la texture utilizzata dallo sprite
 //pos è la coordinata dello sprite, come origine ha il punto in alto a sinistra
 //dim è la larghezza ed altezza dello sprite
-sfSprite* shAppendSprite(scene* s, sfTexture* texture, sfVector2f pos)
+//drawOnRender determina se l'oggetto deve essere disegnato dalla funzione shRenderScene
+sfSprite* shAppendSprite(scene* s, sfTexture* texture, sfVector2f pos, bool drawOnRender)
 {
 	scene* Stmp = shSetLast(s);
 	
 	Stmp->type = spr;
+	Stmp->draw = drawOnRender;
 
 	sfSprite* Sptmp = Stmp->T.sprite;
 	Sptmp = sfSprite_create();

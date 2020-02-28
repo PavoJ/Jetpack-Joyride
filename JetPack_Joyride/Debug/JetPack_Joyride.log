@@ -1,4 +1,6 @@
 ﻿  main.c
-P:\Documents\Documents\sync\prog\C\JetPack_Joyride\JetPack_Joyride\logica.c(124,55): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+P:\Documents\Documents\sync\prog\C\JetPack_Joyride\JetPack_Joyride\logica.c(125,55): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+P:\Documents\Documents\sync\prog\C\JetPack_Joyride\JetPack_Joyride\logica.c(152,116): warning C4244: '+=': conversion from 'float' to 'int', possible loss of data
+P:\Documents\Documents\sync\prog\C\JetPack_Joyride\JetPack_Joyride\main.c(80,26): warning C4020: 'moveHor': too many actual parameters
 P:\Documents\Documents\sync\prog\C\JetPack_Joyride\JetPack_Joyride\main.c(35,1): warning C4244: 'initializing': conversion from 'unsigned int' to 'float', possible loss of data
   JetPack_Joyride.vcxproj -> P:\Documents\Documents\sync\prog\C\JetPack_Joyride\Debug\JetPack_Joyride.exe

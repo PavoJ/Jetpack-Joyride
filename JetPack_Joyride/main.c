@@ -18,21 +18,21 @@ void gameLoop(sfRenderWindow* win)
 	sfTexture* playerTexture = sfTexture_createFromFile("player.png", NULL);
 	sfTexture* obsTexture = sfTexture_createFromFile("zapbar.png", NULL);
 
-	scene* s = newScene();
+	scene* s = shNewScene();
 
 	//Giocatore
-	sfRectangleShape* mainChar = shAppendRectangleS(s, pl->position, (sfVector2f) { playerWidth, playerHeight });
-	sfRectangleShape_setTexture(mainChar, playerTexture, 0);
+	sfRectangleShape* mainChar = shAppendRectangleS(s, pl->position, (sfVector2f) { playerWidth, playerHeight }, true);
+	sfRectangleShape_setTexture(mainChar, playerTexture, false);
 	
 	//sfondo
-	sfRectangleShape* bg = shAppendRectangleS(s, (sfVector2f) { 0, 0 }, (sfVector2f) { winWidth, winHeight });
+	sfRectangleShape* bg = shAppendRectangleS(s, (sfVector2f) { 0, 0 }, (sfVector2f) { winWidth, winHeight }, false);
 	sfRectangleShape_setTexture(bg, bgTexture, false);
 
 	//calcolo la dimensione della texture dell'ostacolo
 	sfVector2u obsSize = sfTexture_getSize(obsTexture);
 
 	//ostacolo
-	sfRectangleShape* obs = shAppendRectangleS(s, (sfVector2f) { 0, 0 }, (sfVector2f) { obsSize.x * 3, obsSize.y * 3 });
+	sfRectangleShape* obs = shAppendRectangleS(s, (sfVector2f) { 0, 0 }, (sfVector2f) { obsSize.x * 3, obsSize.y * 3 }, false);
 	sfRectangleShape_setTexture(obs, obsTexture, true);
 
 	//orologio di gioco (per aggiornarlo ogni tick)
@@ -41,8 +41,8 @@ void gameLoop(sfRenderWindow* win)
 
 	bool movingUp = false;//se il tasto per andare su è tenuto premuto.
 
-	unsigned int score = 0;//tiene conto della distanza percorsa orizzontalmente
-	unsigned int stage = 1;//tiene conto dello stadio a cui si trovano i giocatori nel livello
+	int score = 0;//tiene conto della distanza percorsa orizzontalmente
+	int stage = 1;//tiene conto dello stadio a cui si trovano i giocatori nel livello
 	
 	bool playing = true;
 	//finchè la finestra è aperta
@@ -58,14 +58,14 @@ void gameLoop(sfRenderWindow* win)
 				sfRenderWindow_close(win);
 				break;
 
-			case sfEvtKeyPressed:
+			case sfEvtKeyPressed://se un tasto è stato cliccato
 				if (sfKeyboard_isKeyPressed(sfKeySpace))
 					movingUp = true;
 				else if (sfKeyboard_isKeyPressed(sfKeyEscape))
 					playing = false;
 				break;
 
-			case sfEvtKeyReleased:
+			case sfEvtKeyReleased://se un tasto è stato lasciato
 				if (!sfKeyboard_isKeyPressed(sfKeySpace))
 					movingUp = false;
 				break;
@@ -87,10 +87,9 @@ void gameLoop(sfRenderWindow* win)
 
 		sfRenderWindow_clear(win, sfWhite);
 
+		drawBackground(win, bg, score);
+		drawObs(win, obs, score);
 		shRenderScene(s, win);
-
-		//disegno i cambiamenti su schermo
-		sfRenderWindow_display(win);
 	}
 
 	shSceneDestroy(s);
@@ -134,18 +133,18 @@ int main ()
 	int inp;
 
 	bool playing = true;
-	while (playing)
+	while (playing && sfRenderWindow_isOpen(win))
 	{
-		s = newScene();
+		s = shNewScene();
 
-		bg = shAppendRectangleS(s, (sfVector2f) { 0, 0 }, (sfVector2f) {winWidth, winHeight});
+		bg = shAppendRectangleS(s, (sfVector2f) { 0, 0 }, (sfVector2f) {winWidth, winHeight}, true);
 		sfRectangleShape_setTexture(bg, bgT, false);
 
-		mainChar = shAppendRectangleS(s, p->position, (sfVector2f) { playerWidth, playerHeight });
+		mainChar = shAppendRectangleS(s, p->position, (sfVector2f) { playerWidth, playerHeight }, true);
 		sfRectangleShape_setTexture(mainChar, mCT, false);
 
-		shAppendText(s, textPos(1.f, 2.f), sfWhite, defaultF, fontSize, "Gioca");
-		shAppendText(s, textPos(2.f, 2.f), sfWhite, defaultF, fontSize, "Impostazioni");
+		shAppendText(s, textPos(1.f, 2.f), sfWhite, defaultF, fontSize, "Gioca", true);
+		shAppendText(s, textPos(2.f, 2.f), sfWhite, defaultF, fontSize, "Impostazioni", true);
 
 		inp = shSceneLoop(s, win, vMode, sfWhite);
 		shSceneDestroy(s);
@@ -157,12 +156,12 @@ int main ()
 			//playing = false;
 			break;
 		case 3://"Impostazioni"
-			s = newScene();
+			s = shNewScene();
 
-			bg = shAppendRectangleS(s, (sfVector2f) { 0, 0 }, (sfVector2f) { winWidth, winHeight });
+			bg = shAppendRectangleS(s, (sfVector2f) { 0, 0 }, (sfVector2f) { winWidth, winHeight }, true);
 			sfRectangleShape_setTexture(bg, bgT, false);
 
-			dtDynText* sounds = shAppendDynText(s, textPos(1.f, 3.f), sfWhite, defaultF, fontSize, 2, "Suoni<on>", "Suoni<off>");
+			dtDynText* sounds = shAppendDynText(s, textPos(1.f, 3.f), sfWhite, defaultF, fontSize, true, 2, "Suoni<on>", "Suoni<off>");
 			
 
 			shSceneLoop(s, win, vMode, sfWhite);

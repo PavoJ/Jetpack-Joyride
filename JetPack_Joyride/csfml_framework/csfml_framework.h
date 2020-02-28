@@ -3,6 +3,10 @@
 
 #include<SFML\Graphics.h>
 
+#include"sceneHandler.c"
+#include"dynText.c"
+
+/*
 #include<stdarg.h>
 #include<stdlib.h>
 
@@ -96,6 +100,6 @@ sfRectangleShape* shAppendRectangleS(scene* s, sfVector2f pos, sfVector2f dim, s
 //pos è la coordinata dello sprite, come origine ha il punto in alto a sinistra
 //dim è la larghezza ed altezza dello sprite
 sfSprite* shAppendSprite(scene* s, sfTexture* texture, sfVector2f pos);
-
+*/
 
 #endif //CSFML_FRAMEWORK_H
