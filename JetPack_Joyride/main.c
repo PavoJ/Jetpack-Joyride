@@ -7,6 +7,7 @@
 #include <stdio.h>
 #include <stdarg.h>
 #include <stdlib.h>
+#include <stdbool.h>
 
 void gameLoop(sfRenderWindow* win)
 {
@@ -14,23 +15,27 @@ void gameLoop(sfRenderWindow* win)
 
 	//texture
 	sfTexture* bgTexture = sfTexture_createFromFile("basicbg.png", NULL);
-	sfTexture* playerTexture = sfTexture_createFromFile("Player.png", NULL);
-	//sfTexture* obsTexture = sfTexture_createFromFile("Obstacle.png", NULL);
+	sfTexture* playerTexture = sfTexture_createFromFile("player.png", NULL);
+	sfTexture* obsTexture = sfTexture_createFromFile("zapbar.png", NULL);
 
-	//giocatore
-	sfRectangleShape* mainChar = sfRectangleShape_create();//Player
-	sfRectangleShape_setSize(mainChar, (sfVector2f) { playerWidth, playerHeight });
+	scene* s = newScene();
+
+	//Giocatore
+	sfRectangleShape* mainChar = shAppendRectangleS(s, pl->position, (sfVector2f) { playerWidth, playerHeight });
 	sfRectangleShape_setTexture(mainChar, playerTexture, 0);
-	sfRectangleShape_setPosition(mainChar, pl->position);
 	
 	//sfondo
-	sfRectangleShape* bg = sfRectangleShape_create();
-	sfRectangleShape_setSize(bg, (sfVector2f) { winWidth, winHeight });
+	sfRectangleShape* bg = shAppendRectangleS(s, (sfVector2f) { 0, 0 }, (sfVector2f) { winWidth, winHeight });
 	sfRectangleShape_setTexture(bg, bgTexture, false);
 
-	//sfRectangleShape* obs = sfRectangleShape_create();
-	//sfRectangleShape_setTexture(obs, obsTexture, true);
+	//calcolo la dimensione della texture dell'ostacolo
+	sfVector2u obsSize = sfTexture_getSize(obsTexture);
 
+	//ostacolo
+	sfRectangleShape* obs = shAppendRectangleS(s, (sfVector2f) { 0, 0 }, (sfVector2f) { obsSize.x * 3, obsSize.y * 3 });
+	sfRectangleShape_setTexture(obs, obsTexture, true);
+
+	//orologio di gioco (per aggiornarlo ogni tick)
 	sfClock* clk = sfClock_create();
 	sfTime elapsedTime;
 
@@ -82,20 +87,17 @@ void gameLoop(sfRenderWindow* win)
 
 		sfRenderWindow_clear(win, sfWhite);
 
-		drawBackground(win, bg, score);
-		sfRenderWindow_drawRectangleShape(win, mainChar, NULL);
+		shRenderScene(s, win);
 
 		//disegno i cambiamenti su schermo
 		sfRenderWindow_display(win);
 	}
 
+	shSceneDestroy(s);
+
 	sfTexture_destroy(bgTexture);
 	sfTexture_destroy(playerTexture);
-	//sfTexture_destroy(obsTexture);
-
-	sfRectangleShape_destroy(mainChar);
-	sfRectangleShape_destroy(bg);
-	//sfRectangleShape_destroy(obs);
+	sfTexture_destroy(obsTexture);
 
 	sfClock_destroy(clk);
 }
@@ -143,9 +145,9 @@ int main ()
 		sfRectangleShape_setTexture(mainChar, mCT, false);
 
 		shAppendText(s, textPos(1.f, 2.f), sfWhite, defaultF, fontSize, "Gioca");
-		shAppendDynText(s, textPos(2.f, 2.f), sfWhite, defaultF, fontSize, 2, "mhh, yes.", "Enslaved menus");
+		shAppendText(s, textPos(2.f, 2.f), sfWhite, defaultF, fontSize, "Impostazioni");
 
-		inp = shSceneLoop(s, win, vMode, sfColor_fromRGB(150, 150, 150));
+		inp = shSceneLoop(s, win, vMode, sfWhite);
 		shSceneDestroy(s);
 
 		switch (inp)
@@ -153,6 +155,19 @@ int main ()
 		case 2://"Gioca"
 			gameLoop(win);
 			//playing = false;
+			break;
+		case 3://"Impostazioni"
+			s = newScene();
+
+			bg = shAppendRectangleS(s, (sfVector2f) { 0, 0 }, (sfVector2f) { winWidth, winHeight });
+			sfRectangleShape_setTexture(bg, bgT, false);
+
+			dtDynText* sounds = shAppendDynText(s, textPos(1.f, 3.f), sfWhite, defaultF, fontSize, 2, "Suoni<on>", "Suoni<off>");
+			
+
+			shSceneLoop(s, win, vMode, sfWhite);
+
+
 			break;
 		}
 	}

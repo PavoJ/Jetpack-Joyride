@@ -26,6 +26,24 @@
 #define jpVelocityFunction(x) x / (x + 1)
 #define grVelocityFunction(x) x
 
+#define PLAYER_OFFSET 720
+
+#define maxDelta winWidth/5
+#define minDelta winWidth/7
+
+#define obsCount (int) ceil((float) winWidth / minDelta) + 2
+
+typedef struct
+{
+	sfVector2f pos;
+	int type;
+} obstacle;
+
+typedef struct {
+	obstacle* obs;
+	sfVector2f lastPos;
+} obsInfo;
+
 player* getP()
 {
 	static player p;
@@ -43,7 +61,7 @@ player* getP()
 	return &p;
 }
 
-void drawBackground(sfRenderWindow* win, sfRectangleShape* bg, unsigned int score)
+void drawBackground(sfRenderWindow* win, sfRectangleShape* bg, int score)
 {
 	sfVector2f bgDim = sfRectangleShape_getSize(bg);
 
@@ -57,7 +75,78 @@ void drawBackground(sfRenderWindow* win, sfRectangleShape* bg, unsigned int scor
     }
 }
 
-void moveHor(unsigned int* score, unsigned int* stage)
+
+obsInfo* getObsInfo()
+{
+	static obsInfo d;
+	static bool setup;
+
+	if (!setup)
+	{
+		int i;
+		d.obs = malloc((obsCount) * sizeof(obstacle));
+		if (d.obs != NULL)
+		{
+			d.lastPos.x = winWidth; // la posizione dell'ultimo ostacolo generato
+			d.lastPos.y = 0;
+
+			for (i = 0; i < obsCount; i++)
+				d.obs[i].type = -1;
+
+			setup = true;
+		}
+	}
+
+	return &d;
+}
+
+void drawObs(sfRenderWindow* win, sfRectangleShape* obsRect, int score)
+{
+	obsInfo* obsIn = getObsInfo();
+
+	obstacle* obs = obsIn->obs;
+	sfVector2f* lastPos = &(obsIn->lastPos);
+
+	int i;
+
+	float deltaPos; // la distanza tra gli ultimi ostacoli generati
+	sfVector2f newPos; // la posizione del nuovo ostacolo
+
+	for (i = 0; i < obsCount; i++) {
+		// Quando un ostacolo esce dallo schermo viene "eliminato"
+		if (obs[i].pos.x < score - PLAYER_OFFSET - maxDelta)
+			obs[i].type = -1;
+	}
+
+	// Generazione di un nuovo ostacolo
+	if (score > lastPos->x + minDelta - winWidth + PLAYER_OFFSET)
+	{
+		deltaPos = rand() % (maxDelta - minDelta) + minDelta;
+		newPos.x = lastPos->x + deltaPos;
+		newPos.y = rand() % (int) (coordMaxY - coordMinY) + coordMinY;
+
+		// Inserisce il nuovo ostacolo nel primo "posto libero"
+		i = 0;
+		while (obs[i].type != -1 && i <= obsCount)
+			i++;
+
+		obs[i].pos.x = newPos.x;
+		obs[i].pos.y = newPos.y;
+		obs[i].type = 1;
+
+		lastPos->x = newPos.x;
+		lastPos->y = newPos.y;
+	}
+
+	for (i = 0; i < obsCount; i++) {
+		if ((obs[i].type != -1) && (obs[i].pos.x - score + PLAYER_OFFSET < winWidth) && (obs[i].pos.x - score + PLAYER_OFFSET >= 0)) {
+			sfRectangleShape_setPosition(obsRect, (sfVector2f) { obs[i].pos.x - score + PLAYER_OFFSET, obs[i].pos.y });
+			sfRenderWindow_drawRectangleShape(win, obsRect, NULL);
+		}
+	}
+}
+
+void moveHor(int* score, int* stage)
 {
 	(*score) += horScreenVelocity;
 	if (!((*score) % stageLength))

@@ -33,6 +33,9 @@
     <ClCompile Include="csfml_framework\dynText.c">
       <Filter>Source Files\csfml_framework</Filter>
     </ClCompile>
+    <ClCompile Include="settingsHandler.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Font Include="defaultFont.ttf">

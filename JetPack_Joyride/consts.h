@@ -1,7 +1,7 @@
 #ifndef CONSTS_H
 #define CONSTS_H 1
 
-#include<stdbool.h>
+#include <stdbool.h>
 
 #define tick 35 //millisecondi
 
@@ -17,7 +17,7 @@
 
 typedef struct
 {
-	sfVector2f position;//vettore di 2 float, della SFML. L'ho cambiato per una compabilità migliore
+	sfVector2f position;
 	float velocity;
 	bool oldMoveUp;
 } player;
