@@ -1,6 +1,18 @@
 ﻿  main.c
-P:\Documents\Documents\sync\prog\C\JetPack_Joyride\JetPack_Joyride\logica.c(125,55): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-P:\Documents\Documents\sync\prog\C\JetPack_Joyride\JetPack_Joyride\logica.c(152,116): warning C4244: '+=': conversion from 'float' to 'int', possible loss of data
-P:\Documents\Documents\sync\prog\C\JetPack_Joyride\JetPack_Joyride\main.c(80,26): warning C4020: 'moveHor': too many actual parameters
-P:\Documents\Documents\sync\prog\C\JetPack_Joyride\JetPack_Joyride\main.c(35,1): warning C4244: 'initializing': conversion from 'unsigned int' to 'float', possible loss of data
+P:\Documents\Documents\sync\prog\C\JetPack_Joyride\JetPack_Joyride\logica.c(103,26): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+P:\Documents\Documents\sync\prog\C\JetPack_Joyride\JetPack_Joyride\logica.c(168,121): warning C4244: '+=': conversion from 'float' to 'int', possible loss of data
+P:\Documents\Documents\sync\prog\C\JetPack_Joyride\JetPack_Joyride\main.c(58,38): warning C4133: 'function': incompatible types - from 'sfSprite *' to 'sfRectangleShape *'
+P:\Documents\Documents\sync\prog\C\JetPack_Joyride\JetPack_Joyride\main.c(116,41): warning C4133: 'function': incompatible types - from 'sfSprite *' to 'sfRectangleShape *'
+P:\Documents\Documents\sync\prog\C\JetPack_Joyride\JetPack_Joyride\main.c(57,1): warning C4133: 'initializing': incompatible types - from 'sfRectangleShape *' to 'sfSprite *'
+P:\Documents\Documents\sync\prog\C\JetPack_Joyride\JetPack_Joyride\main.c(64,1): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+P:\Documents\Documents\sync\prog\C\JetPack_Joyride\JetPack_Joyride\main.c(71,1): warning C4244: 'initializing': conversion from 'unsigned int' to 'float', possible loss of data
+P:\Documents\Documents\sync\prog\C\JetPack_Joyride\JetPack_Joyride\main.c(180,1): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+P:\Documents\Documents\sync\prog\C\JetPack_Joyride\JetPack_Joyride\main.c(186,1): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+P:\Documents\Documents\sync\prog\C\JetPack_Joyride\JetPack_Joyride\main.c(187,1): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+P:\Documents\Documents\sync\prog\C\JetPack_Joyride\JetPack_Joyride\main.c(201,1): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+P:\Documents\Documents\sync\prog\C\JetPack_Joyride\JetPack_Joyride\main.c(204,1): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+P:\Documents\Documents\sync\prog\C\JetPack_Joyride\JetPack_Joyride\main.c(209,1): warning C4090: 'initializing': different 'const' qualifiers
+P:\Documents\Documents\sync\prog\C\JetPack_Joyride\JetPack_Joyride\main.c(211,1): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+P:\Documents\Documents\sync\prog\C\JetPack_Joyride\JetPack_Joyride\main.c(223,1): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+P:\Documents\Documents\sync\prog\C\JetPack_Joyride\JetPack_Joyride\main.c(225,1): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
   JetPack_Joyride.vcxproj -> P:\Documents\Documents\sync\prog\C\JetPack_Joyride\Debug\JetPack_Joyride.exe

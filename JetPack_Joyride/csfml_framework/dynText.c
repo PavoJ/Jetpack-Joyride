@@ -56,7 +56,7 @@ dtDynTextCh* dtDynTextChAppend(dtDynTextCh* DT, const char* str)
 		else printf("Errore nell'allocazione di memoria per la stringa %s", str);
 	}
 	else {
-		printf("c'e' stato un errore nell'append di un elemento di testo DynTextCh");
+		fprintf_s(stderr, "c'e' stato un errore nell'append di un elemento di testo DynTextCh");
 	}
 
 	return DT;

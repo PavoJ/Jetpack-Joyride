@@ -1,6 +1,6 @@
 /*
 	scene è una lista contenente gli elementi che compongono una schermata (menù principale, impostazioni, gioco...)
-	il tipo scene non va confuso con una pila, dato che non contiene operazioni di pop.
+	il tipo scene non va confuso con una pila, dato che non è LIFO
 */
 
 //#include"csfml_framework.h"
@@ -49,7 +49,7 @@ scene* shNewScene()
 	}
 	else
 	{
-		printf("c'e' stato un errore nell'allocazione di una nuova scena\n");
+		fprintf_s(stderr, "c'e' stato un errore nell'allocazione di una nuova scena\n");
 	}
 
 	return Stmp;
@@ -58,9 +58,10 @@ scene* shNewScene()
 //Imposto il puntatore della scena al primo elemento vuoto
 scene* shSetLast(scene* s)
 {
-	while (s->type != empty) s = s->next;
-
-	s->next = shNewScene();
+	if (s->type != empty)
+		s = shSetLast(s->next);
+	else
+		s->next = shNewScene();	
 
 	return s;
 }
@@ -68,30 +69,31 @@ scene* shSetLast(scene* s)
 void shRenderScene(scene* s, sfRenderWindow* win)
 {
 	union shSceneT Stype;
-	while (s->type != empty)
+
+	Stype = s->T;
+
+	if (s->draw)
 	{
-		Stype = s->T;
-
-		if(s->draw)
-			switch (s->type)
-			{
-			case dTxt:
-				sfRenderWindow_drawText(win, Stype.dynText->sText.text, NULL);
-				break;
-			case sTxt:
-				sfRenderWindow_drawText(win, Stype.sText->text, NULL);
-				break;
-			case rec:
-				sfRenderWindow_drawRectangleShape(win, Stype.rect, NULL);
-				break;
-			case spr:
-				sfRenderWindow_drawSprite(win, Stype.sprite, NULL);
-				break;
-			}
-
-		s = s->next;
+		switch (s->type)
+		{
+		case dTxt:
+			sfRenderWindow_drawText(win, Stype.dynText->sText.text, NULL);
+			break;
+		case sTxt:
+			sfRenderWindow_drawText(win, Stype.sText->text, NULL);
+			break;
+		case rec:
+			sfRenderWindow_drawRectangleShape(win, Stype.rect, NULL);
+			break;
+		case spr:
+			sfRenderWindow_drawSprite(win, Stype.sprite, NULL);
+			break;
+		}
 	}
-	sfRenderWindow_display(win);
+	
+	s = s->next;
+	if (s->type != empty) shRenderScene(s, win);
+	else sfRenderWindow_display(win);
 }
 
 //mette una scena s in una window loop, e riporta un valore pari al tasto premuto
@@ -200,7 +202,8 @@ void shCenterText(sfText* t)
 //drawOnRender determina se l'oggetto deve essere disegnato dalla funzione shRenderScene
 //argc è il numero di stati che può assumere il testo
 //di seguito vanno inserite stringhe di numero argc, sono i vari stati che può assumere il testo
-dtDynText* shAppendDynText(scene* s, sfVector2f pos, sfColor color, sfFont* font, unsigned int textSize, bool drawOnRender, int argc, ...)
+//centerText determina se va centrato il testo
+dtDynText* shAppendDynText(scene* s, sfVector2f pos, sfColor color, sfFont* font, unsigned int textSize, bool drawOnRender, bool centerText, int argc, ...)
 {
 	scene* Stmp = shSetLast(s);
 
@@ -214,8 +217,6 @@ dtDynText* shAppendDynText(scene* s, sfVector2f pos, sfColor color, sfFont* font
 	{
 		DTtmp->stateT = argc;
 		DTtmp->state = 1;
-		
-
 
 		DTtmp->sText.text = sfText_create();
 		if (DTtmp->sText.text != NULL)
@@ -227,9 +228,12 @@ dtDynText* shAppendDynText(scene* s, sfVector2f pos, sfColor color, sfFont* font
 			va_start(list, argc);
 			char* STRtmp;
 			int a;
+
 			DTtmp->states = malloc(sizeof(dtDynTextCh));
+
 			if (DTtmp->states != NULL)
 			{
+				DTtmp->states->ctxt = NULL;
 				DTtmp->states->next = NULL;
 
 				for (a = 0; a < argc; a++)
@@ -246,7 +250,7 @@ dtDynText* shAppendDynText(scene* s, sfVector2f pos, sfColor color, sfFont* font
 			sfText_setPosition(Ttmp, pos);
 			sfText_setFont(Ttmp, font);
 			sfText_setCharacterSize(Ttmp, textSize);
-			shCenterText(Ttmp);
+			if(centerText) shCenterText(Ttmp);
 
 			sfText_setFillColor(Ttmp, color);
 			DTtmp->sText.defaultColor = color;
@@ -260,7 +264,8 @@ dtDynText* shAppendDynText(scene* s, sfVector2f pos, sfColor color, sfFont* font
 //font è il font utilizzato
 //textSize è la dimensione del testo su schermo
 //drawOnRender determina se l'oggetto deve essere disegnato dalla funzione shRenderScene
-sfText* shAppendText(scene* s, sfVector2f pos, sfColor color, sfFont* font, unsigned int textSize, const char* str, bool drawOnRender)
+//centerText determina se va centrato il testo
+sfText* shAppendText(scene* s, sfVector2f pos, sfColor color, sfFont* font, unsigned int textSize, const char* str, bool drawOnRender, bool centerText)
 {
 	scene* Stmp = shSetLast(s);
 
@@ -280,7 +285,7 @@ sfText* shAppendText(scene* s, sfVector2f pos, sfColor color, sfFont* font, unsi
 		sfText_setFont(Ttmp, font);
 		sfText_setCharacterSize(Ttmp, textSize);
 		sfText_setString(Ttmp, str);
-		shCenterText(Ttmp);
+		if(centerText) shCenterText(Ttmp);
 
 		sfText_setFillColor(Ttmp, color);
 		STtemp->defaultColor = color;
@@ -312,7 +317,6 @@ sfRectangleShape* shAppendRectangleS(scene* s, sfVector2f pos, sfVector2f dim, b
 //esegue un append di uno sprite alla scena s
 //texture è la texture utilizzata dallo sprite
 //pos è la coordinata dello sprite, come origine ha il punto in alto a sinistra
-//dim è la larghezza ed altezza dello sprite
 //drawOnRender determina se l'oggetto deve essere disegnato dalla funzione shRenderScene
 sfSprite* shAppendSprite(scene* s, sfTexture* texture, sfVector2f pos, bool drawOnRender)
 {
@@ -323,7 +327,7 @@ sfSprite* shAppendSprite(scene* s, sfTexture* texture, sfVector2f pos, bool draw
 
 	sfSprite* Sptmp = Stmp->T.sprite;
 	Sptmp = sfSprite_create();
-	sfSprite_setTexture(Sptmp, texture, 0);
+	sfSprite_setTexture(Sptmp, texture, false);
 	sfSprite_setPosition(Sptmp, pos);
 
 	return Sptmp;
@@ -334,30 +338,29 @@ void shSceneDestroy(scene* s)
 	scene* Stmp;
 	union shSceneT* STtmp;
 
-	while (s != NULL)
-	{
-		Stmp = s;
-		s = s->next;
+	Stmp = s;
+	s = s->next;
 
-		STtmp = &Stmp->T;
-		switch (Stmp->type)
-		{
-		case dTxt:
-			free(STtmp->dynText->states);
-			sfText_destroy(STtmp->dynText->sText.text);
-			free(STtmp->dynText);
-			break;
-		case sTxt:
-			sfText_destroy(STtmp->sText->text);
-			free(STtmp->sText);
-			break;
-		case rec:
-			sfRectangleShape_destroy(STtmp->rect);
-			break;
-		case spr:
-			sfSprite_destroy(STtmp->sprite);
-			break;
-		}
-		free(Stmp);
+	STtmp = &Stmp->T;
+	switch (Stmp->type)
+	{
+	case dTxt:
+		free(STtmp->dynText->states);
+		sfText_destroy(STtmp->dynText->sText.text);
+		free(STtmp->dynText);
+		break;
+	case sTxt:
+		sfText_destroy(STtmp->sText->text);
+		free(STtmp->sText);
+		break;
+	case rec:
+		sfRectangleShape_destroy(STtmp->rect);
+		break;
+	case spr:
+		sfSprite_destroy(STtmp->sprite);
+		break;
 	}
+	free(Stmp);
+
+	if (s != NULL) shSceneDestroy(s);
 }

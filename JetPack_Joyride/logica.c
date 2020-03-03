@@ -7,14 +7,15 @@
 #include <math.h>
 
 #include "consts.h"
+#include "settingsHandler.c"
 
 #define bgCount ceil((float) winWidth / bgDim.x) + 1 // numero di sfondi su schermo
 #define obsCount (int) ceil((float) winWidth / minDelta) + 2 // numero massimom di ostacoli su schermo
 
 /* costanti di scroll dello schermo */
-#define bgInitialVelocity 15.f /* velocità iniziale */
-#define bgTerminalVelocity 35.f /* velocità massima che si può raggiungere */
-#define bgSoftness 20.f /* gradualità per cui si passa da velocità iniziale a finale */
+#define bgInitialVelocity 10.f /* velocità iniziale */
+#define bgTerminalVelocity 50.f /* velocità massima che si può raggiungere */
+#define bgSoftness 20000.f /* gradualità per cui si passa da velocità iniziale a finale */
 
 /* costanti di quando ti muovi verso l'alto */
 #define jpInitialVelocity 5.f /* velocità iniziale */
@@ -23,14 +24,13 @@
 
 /* costanti di quando ti muovi verso il basso */
 #define grInitialVelocity 0.f /* velocità iniziale */
-#define grTerminalVelocity -50.f /* velocità massima che si può raggiungere */
-#define grSoftness 30.f /* gradualità per cui si passa da velocità iniziale a finale */
+#define grSoftness 1.2f /* gradualità per cui si passa da velocità iniziale a finale */
 
 #define bgVelocityFunction(x) x / (x + 1)
 #define jpVelocityFunction(x) x / (x + 1)
 #define grVelocityFunction(x) x
 
-#define PLAYER_OFFSET 720
+#define PLAYER_OFFSET -100
 
 #define maxDelta winWidth/5 // massima distanza fra due ostacoli
 #define minDelta winWidth/7 // minima distanza fra due ostacoli
@@ -48,6 +48,10 @@ typedef struct {
 
 player* getP()
 {
+	sthSettings* set = sthGetSettings();
+	int winWidth = set->vMode.width;
+	int winHeight = set->vMode.height;
+
 	static player p;
 	static bool setup; /* false */
 
@@ -65,6 +69,10 @@ player* getP()
 
 void drawBackground(sfRenderWindow* win, sfRectangleShape* bg, int score)
 {
+	sthSettings* set = sthGetSettings();
+	int winWidth = set->vMode.width;
+	int winHeight = set->vMode.height;
+
 	sfVector2f bgDim = sfRectangleShape_getSize(bg);
 
 	float i, x;
@@ -79,6 +87,10 @@ void drawBackground(sfRenderWindow* win, sfRectangleShape* bg, int score)
 
 obsInfo* getObsInfo()
 {
+	sthSettings* set = sthGetSettings();
+	int winWidth = set->vMode.width;
+	int winHeight = set->vMode.height;
+
 	static obsInfo d;
 	static bool setup;
 
@@ -103,6 +115,10 @@ obsInfo* getObsInfo()
 
 void drawObs(sfRenderWindow* win, sfRectangleShape* obsRect, int score)
 {
+	sthSettings* set = sthGetSettings();
+	int winWidth = set->vMode.width;
+	int winHeight = set->vMode.height;
+
 	obsInfo* obsIn = getObsInfo();
 
 	obstacle* obs = obsIn->obs;
@@ -122,7 +138,7 @@ void drawObs(sfRenderWindow* win, sfRectangleShape* obsRect, int score)
 	// Generazione di un nuovo ostacolo
 	if (score > lastPos->x + minDelta - winWidth + PLAYER_OFFSET)
 	{
-		deltaPos = rand() % (maxDelta - minDelta) + minDelta;
+		deltaPos = (float)(rand() % (maxDelta - minDelta) + minDelta);
 		newPos.x = lastPos->x + deltaPos;
 		newPos.y = rand() % (int)(coordMaxY - coordMinY) + coordMinY;
 
@@ -149,11 +165,15 @@ void drawObs(sfRenderWindow* win, sfRectangleShape* obsRect, int score)
 
 void moveHor(int* score)
 {
-	(*score) += (bgTerminalVelocity - bgInitialVelocity) * bgVelocityFunction(*score / bgSoftness) + bgInitialVelocity;
+	(*score) += (int)(bgTerminalVelocity - bgInitialVelocity) * bgVelocityFunction(*score / bgSoftness) + bgInitialVelocity;
 }
 
 void moveVer(bool moveUp)
 {
+	sthSettings* set = sthGetSettings();
+	int winWidth = set->vMode.width;
+	int winHeight = set->vMode.height;
+
 	player* p = getP();
 
 	static int delta;
@@ -169,7 +189,7 @@ void moveVer(bool moveUp)
 	if (moveUp)
 		p->velocity = (jpTerminalVelocity - jpInitialVelocity) * jpVelocityFunction(delta / jpSoftness) + jpInitialVelocity;
 	else
-		p->velocity = (grVelocityFunction(delta) / grSoftness) + grInitialVelocity;
+		p->velocity = -((grVelocityFunction(delta) / grSoftness) + grInitialVelocity);
 
 	p->position.y -= p->velocity;
 
@@ -186,13 +206,34 @@ void moveVer(bool moveUp)
 	}
 
 }
-
-void writeScore(unsigned int score, FILE* fp) {
-	fprintf_s(fp, "%d", score);
+	
+void writeScore(int score)
+{
+	FILE* fp;
+	errno_t err = fopen_s(&fp, "lastScore.txt", "w");
+	
+	if (fp != NULL && err == 0)
+	{
+		fprintf_s(fp, "%d", score);
+		fclose(fp);
+	}
 }
 
-unsigned int readScore(FILE* fp) {
-	unsigned int r;
-	fscanf_s(fp, "%d", &r);
+int readScore()
+{
+	int r;
+	FILE* fp;
+	errno_t err = fopen_s(&fp, "lastScore.txt", "r");
+
+	if (fp != NULL && err == 0)
+	{
+		fscanf_s(fp, "%d", &r);
+		fclose(fp);
+	}
+	else
+	{
+		r = 0;
+	}
+
 	return r;
 }

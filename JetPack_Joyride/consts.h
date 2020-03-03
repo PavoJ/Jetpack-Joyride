@@ -5,9 +5,6 @@
 
 #define tick 35 //millisecondi
 
-#define winWidth 960
-#define winHeight 540
-
 /* valori esterni dipendenti dalla finestra di gioco */
 #define coordMaxY (winHeight-(float)winHeight/25.f)
 #define coordMinY ((float)winHeight/25.f)
