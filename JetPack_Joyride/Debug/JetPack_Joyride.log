@@ -1,6 +1,7 @@
 ﻿  main.c
-P:\Documents\Documents\sync\prog\C\JetPack_Joyride\JetPack_Joyride\logica.c(103,26): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-P:\Documents\Documents\sync\prog\C\JetPack_Joyride\JetPack_Joyride\logica.c(168,121): warning C4244: '+=': conversion from 'float' to 'int', possible loss of data
+P:\Documents\Documents\sync\prog\C\JetPack_Joyride\JetPack_Joyride\logica.c(100,10): warning C4477: 'printf' : format string '%g' requires an argument of type 'double', but variadic argument 1 has type 'int'
+P:\Documents\Documents\sync\prog\C\JetPack_Joyride\JetPack_Joyride\logica.c(104,26): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+P:\Documents\Documents\sync\prog\C\JetPack_Joyride\JetPack_Joyride\logica.c(172,121): warning C4244: '+=': conversion from 'float' to 'int', possible loss of data
 P:\Documents\Documents\sync\prog\C\JetPack_Joyride\JetPack_Joyride\main.c(58,38): warning C4133: 'function': incompatible types - from 'sfSprite *' to 'sfRectangleShape *'
 P:\Documents\Documents\sync\prog\C\JetPack_Joyride\JetPack_Joyride\main.c(116,41): warning C4133: 'function': incompatible types - from 'sfSprite *' to 'sfRectangleShape *'
 P:\Documents\Documents\sync\prog\C\JetPack_Joyride\JetPack_Joyride\main.c(57,1): warning C4133: 'initializing': incompatible types - from 'sfRectangleShape *' to 'sfSprite *'

@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include<SFML\System.h>
+#include <SFML\System.h>
 
 #include <time.h>
 #include <math.h>
@@ -10,30 +10,30 @@
 #include "settingsHandler.c"
 
 #define bgCount ceil((float) winWidth / bgDim.x) + 1 // numero di sfondi su schermo
-#define obsCount (int) ceil((float) winWidth / minDelta) + 2 // numero massimom di ostacoli su schermo
+#define obsCount (int)ceil((double)( winWidth / minDelta)) + 2 // numero massimo di ostacoli su schermo
 
 /* costanti di scroll dello schermo */
-#define bgInitialVelocity 10.f /* velocità iniziale */
-#define bgTerminalVelocity 50.f /* velocità massima che si può raggiungere */
+#define bgInitialVelocity .0093f * winHeight /* velocità iniziale */
+#define bgTerminalVelocity .0463f * winHeight /* velocità massima che si può raggiungere */
 #define bgSoftness 20000.f /* gradualità per cui si passa da velocità iniziale a finale */
 
 /* costanti di quando ti muovi verso l'alto */
-#define jpInitialVelocity 5.f /* velocità iniziale */
-#define jpTerminalVelocity 20.f /* velocità massima che si può raggiungere */
+#define jpInitialVelocity .0046f * winHeight /* velocità iniziale */
+#define jpTerminalVelocity .0185f * winHeight /* velocità massima che si può raggiungere */
 #define jpSoftness 20.f /* gradualità per cui si passa da velocità iniziale a finale */
 
 /* costanti di quando ti muovi verso il basso */
-#define grInitialVelocity 0.f /* velocità iniziale */
+#define grInitialVelocity 0.f * winHeight /* velocità iniziale */
 #define grSoftness 1.2f /* gradualità per cui si passa da velocità iniziale a finale */
 
 #define bgVelocityFunction(x) x / (x + 1)
 #define jpVelocityFunction(x) x / (x + 1)
 #define grVelocityFunction(x) x
 
-#define PLAYER_OFFSET -100
+#define PLAYER_OFFSET (-.0521f * winWidth)
 
-#define maxDelta winWidth/5 // massima distanza fra due ostacoli
-#define minDelta winWidth/7 // minima distanza fra due ostacoli
+#define maxDelta (.2000 * winWidth) // massima distanza fra due ostacoli
+#define minDelta (.1429 * winWidth) // minima distanza fra due ostacoli
 
 typedef struct
 {
@@ -97,7 +97,8 @@ obsInfo* getObsInfo()
 	if (!setup)
 	{
 		int i;
-		d.obs = malloc(obsCount * sizeof(obstacle));
+		printf("%g", obsCount);
+		d.obs = (obstacle*)malloc(obsCount * sizeof(obstacle));
 		if (d.obs != NULL)
 		{
 			d.lastPos.x = winWidth; // la posizione dell'ultimo ostacolo generato
@@ -138,7 +139,7 @@ void drawObs(sfRenderWindow* win, sfRectangleShape* obsRect, int score)
 	// Generazione di un nuovo ostacolo
 	if (score > lastPos->x + minDelta - winWidth + PLAYER_OFFSET)
 	{
-		deltaPos = (float)(rand() % (maxDelta - minDelta) + minDelta);
+		deltaPos = (float)(rand() % (int)(maxDelta - minDelta) + minDelta);
 		newPos.x = lastPos->x + deltaPos;
 		newPos.y = rand() % (int)(coordMaxY - coordMinY) + coordMinY;
 
@@ -165,6 +166,9 @@ void drawObs(sfRenderWindow* win, sfRectangleShape* obsRect, int score)
 
 void moveHor(int* score)
 {
+	sthSettings* set = sthGetSettings();
+	int winWidth = set->vMode.width;
+	int winHeight = set->vMode.height;
 	(*score) += (int)(bgTerminalVelocity - bgInitialVelocity) * bgVelocityFunction(*score / bgSoftness) + bgInitialVelocity;
 }
 
@@ -206,12 +210,12 @@ void moveVer(bool moveUp)
 	}
 
 }
-	
+
 void writeScore(int score)
 {
 	FILE* fp;
 	errno_t err = fopen_s(&fp, "lastScore.txt", "w");
-	
+
 	if (fp != NULL && err == 0)
 	{
 		fprintf_s(fp, "%d", score);
