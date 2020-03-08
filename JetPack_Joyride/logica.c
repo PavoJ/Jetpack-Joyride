@@ -9,31 +9,38 @@
 #include "consts.h"
 #include "settingsHandler.c"
 
-#define bgCount ceil((float) winWidth / bgDim.x) + 1 // numero di sfondi su schermo
-#define obsCount (int)ceil((double)( winWidth / minDelta)) + 2 // numero massimo di ostacoli su schermo
+#define bgCount (ceil((float)winWidth / bgDim.x) + 1) // numero di sfondi su schermo
+#define obsCount ((int)ceil((double)( winWidth / minDelta)) + 2) // numero massimo di ostacoli su schermo
 
 /* costanti di scroll dello schermo */
-#define bgInitialVelocity .0093f * winHeight /* velocità iniziale */
-#define bgTerminalVelocity .0463f * winHeight /* velocità massima che si può raggiungere */
-#define bgSoftness 20000.f /* gradualità per cui si passa da velocità iniziale a finale */
+#define bgInitialVelocity (.0093 * winHeight) /* velocità iniziale */
+#define bgTerminalVelocity (.0463 * winHeight) /* velocità massima che si può raggiungere */
+#define bgSoftness 20000. /* gradualità per cui si passa da velocità iniziale a finale */
 
 /* costanti di quando ti muovi verso l'alto */
-#define jpInitialVelocity .0046f * winHeight /* velocità iniziale */
-#define jpTerminalVelocity .0185f * winHeight /* velocità massima che si può raggiungere */
-#define jpSoftness 20.f /* gradualità per cui si passa da velocità iniziale a finale */
+#define jpInitialVelocity (.0046 * winHeight) /* velocità iniziale */
+#define jpTerminalVelocity (.0185 * winHeight) /* velocità massima che si può raggiungere */
+#define jpSoftness 20. /* gradualità per cui si passa da velocità iniziale a finale */
 
 /* costanti di quando ti muovi verso il basso */
-#define grInitialVelocity 0.f * winHeight /* velocità iniziale */
-#define grSoftness 1.2f /* gradualità per cui si passa da velocità iniziale a finale */
+#define grInitialVelocity (0. * winHeight) /* velocità iniziale */
+#define grSoftness 1.2 /* gradualità per cui si passa da velocità iniziale a finale */
 
-#define bgVelocityFunction(x) x / (x + 1)
-#define jpVelocityFunction(x) x / (x + 1)
+#define bgVelocityFunction(x) (x / (x + 1))
+#define jpVelocityFunction(x) (x / (x + 1))
 #define grVelocityFunction(x) x
 
-#define PLAYER_OFFSET (-.0521f * winWidth)
+#define PLAYER_OFFSET 130.
 
-#define maxDelta (.2000 * winWidth) // massima distanza fra due ostacoli
-#define minDelta (.1429 * winWidth) // minima distanza fra due ostacoli
+#define maxDelta (.2500 * winWidth) // massima distanza fra due ostacoli
+#define minDelta (.2000 * winWidth) // minima distanza fra due ostacoli
+
+typedef struct
+{
+	sfVector2f position;
+	float velocity;
+	bool oldMoveUp;
+} player;
 
 typedef struct
 {
@@ -97,7 +104,6 @@ obsInfo* getObsInfo()
 	if (!setup)
 	{
 		int i;
-		printf("%g", obsCount);
 		d.obs = (obstacle*)malloc(obsCount * sizeof(obstacle));
 		if (d.obs != NULL)
 		{
@@ -112,6 +118,38 @@ obsInfo* getObsInfo()
 	}
 
 	return &d;
+}
+
+bool collisionCheck(int score, sfRectangleShape* player, sfRectangleShape* obsRect)
+{
+	sthSettings* set = sthGetSettings();
+	int winWidth = set->vMode.width;
+	int winHeight = set->vMode.height;
+
+	obsInfo* obsIn = getObsInfo();
+
+	obstacle* obs = obsIn->obs;
+	sfVector2f* lastPos = &(obsIn->lastPos);
+	
+	bool gameOver = false;
+
+	sfFloatRect pl;
+	pl = sfRectangleShape_getGlobalBounds(player);
+
+	sfFloatRect rect;
+	int i=0;
+	while(i < obsCount && !gameOver)
+	{
+		sfRectangleShape_setPosition(obsRect, (sfVector2f) { obs[i].pos.x - score, obs[i].pos.y });
+		rect = sfRectangleShape_getGlobalBounds(obsRect);
+
+		if (sfFloatRect_intersects(&rect, &pl, NULL))
+			gameOver = true;
+
+		i++;
+	}
+
+	return gameOver;
 }
 
 void drawObs(sfRenderWindow* win, sfRectangleShape* obsRect, int score)
@@ -141,7 +179,7 @@ void drawObs(sfRenderWindow* win, sfRectangleShape* obsRect, int score)
 	{
 		deltaPos = (float)(rand() % (int)(maxDelta - minDelta) + minDelta);
 		newPos.x = lastPos->x + deltaPos;
-		newPos.y = rand() % (int)(coordMaxY - coordMinY) + coordMinY;
+		newPos.y = (float)(rand() % (int)(coordMaxY - coordMinY) + coordMinY);
 
 		// Inserisce il nuovo ostacolo nel primo "posto libero"
 		i = 0;
@@ -157,8 +195,9 @@ void drawObs(sfRenderWindow* win, sfRectangleShape* obsRect, int score)
 	}
 
 	for (i = 0; i < obsCount; i++) {
-		if ((obs[i].type != -1) && (obs[i].pos.x - score + PLAYER_OFFSET < winWidth) && (obs[i].pos.x - score + PLAYER_OFFSET >= 0)) {
-			sfRectangleShape_setPosition(obsRect, (sfVector2f) { obs[i].pos.x - score + PLAYER_OFFSET, obs[i].pos.y });
+		if ((obs[i].type != -1)) {
+			//printf("Drawing obstacle at x: %f, y: %f;\n", obs[i].pos.x - score + PLAYER_OFFSET, obs[i].pos.y);
+			sfRectangleShape_setPosition(obsRect, (sfVector2f) { obs[i].pos.x - score, obs[i].pos.y });
 			sfRenderWindow_drawRectangleShape(win, obsRect, NULL);
 		}
 	}

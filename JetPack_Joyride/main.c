@@ -53,9 +53,9 @@ void gameLoop(sfRenderWindow* win)
 	sfFont* defaultF = sfFont_createFromFile("defaultFont.ttf");
 	int fontSize = 45;
 	
-	//Giocatore (non è uno sprite per alcune limitazioni di CSFML sui sprite)
-	sfSprite* mainChar = shAppendRectangleS(s, pl->position, (sfVector2f) { (playerWidth/1920)*winWidth, (playerHeight/1080)*winHeight }, true);
-	sfRectangleShape_setTexture(mainChar, playerTexture, false);
+	//Giocatore (non è uno sprite per alcune limitazioni di CSFML)
+	sfRectangleShape* mainChar = shAppendRectangleS(s, pl->position, (sfVector2f) { (playerWidth/1920)*winWidth, (playerHeight/1080)*winHeight }, true);
+	sfRectangleShape_setTexture(mainChar, playerTexture, true);
 	
 	//scritta del punteggio
 	sfText* scoreText = shAppendText(s, (sfVector2f) { 0, 0 }, sfBlue, defaultF, fontSize, pointsStr(score, highScore), true, false);
@@ -68,7 +68,7 @@ void gameLoop(sfRenderWindow* win)
 	sfVector2u obsSize = sfTexture_getSize(obsTexture);
 
 	//ostacolo
-	sfRectangleShape* obs = shAppendRectangleS(s, (sfVector2f) { 0, 0 }, (sfVector2f) { (obsSize.x * 3 / 1920)*winWidth, (obsSize.y * 3 / 1920)*winHeight }, false);
+	sfRectangleShape* obs = shAppendRectangleS(s, (sfVector2f) { 0, 0 }, (sfVector2f) { (obsSize.x * 3. / 1920.)*winWidth, (obsSize.y * 3. / 1920.)*winHeight }, false);
 	sfRectangleShape_setTexture(obs, obsTexture, true);
 
 	//orologio di gioco (per aggiornarlo ogni tick)
@@ -82,9 +82,8 @@ void gameLoop(sfRenderWindow* win)
 	while (sfRenderWindow_isOpen(win) && playing)
 	{
 		sfEvent event;
-		while (sfRenderWindow_pollEvent(win, &event))//ciclo tra tutti gli eventi accumulati
+		while (sfRenderWindow_pollEvent(win, &event))//ciclo tra tutti gli eventi
 		{
-			//switch per i vari tipi di evento
 			switch (event.type)
 			{
 			case sfEvtClosed://chiusura finestra
@@ -110,8 +109,10 @@ void gameLoop(sfRenderWindow* win)
 		{
 			sfClock_restart(clk);
 
-			moveHor(&score);
-			moveVer(movingUp);
+			playing = !collisionCheck(score, mainChar, obs);
+
+			moveHor(&score);//muovo gli ostacoli
+			moveVer(movingUp);//muovo il giocatore
 			
 			sfRectangleShape_setPosition(mainChar, pl->position);
 
@@ -146,6 +147,8 @@ void gameLoop(sfRenderWindow* win)
 
 int main ()
 {
+	srand(time(NULL));
+
 	sthSettings* set = sthGetSettings();
 	int winWidth = set->vMode.width;
 	int winHeight = set->vMode.height;
@@ -180,7 +183,7 @@ int main ()
 		bg = shAppendRectangleS(s, (sfVector2f) { 0, 0 }, (sfVector2f) {winWidth, winHeight}, true);
 		sfRectangleShape_setTexture(bg, bgT, false);
 
-		mainChar = shAppendRectangleS(s, p->position, (sfVector2f) { (playerWidth / 1920)* winWidth, (playerHeight / 1080)* winHeight }, true);
+		mainChar = shAppendRectangleS(s, p->position, (sfVector2f) { (playerWidth / 1920.f)* winWidth, (playerHeight / 1080.f)* winHeight }, true);
 		sfRectangleShape_setTexture(mainChar, mCT, false);
 
 		shAppendText(s, textPos(1.f, 2.f), sfWhite, defaultF, fontSize, "Gioca", true, true);
