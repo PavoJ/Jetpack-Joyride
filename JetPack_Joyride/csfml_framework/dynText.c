@@ -1,8 +1,8 @@
 /*
 	DynText è un oggetto di testo dinamico
 	è un espansione al concetto di testo di CSFML sfText, in quanto non contiene solo una stringa,
-	ma più stringhe che ciclano se una condizione è avverata (Per gli scopi di questo programma lo usiamo principalmente
-		se il giocatore clicca il testo).
+	ma più stringhe che ciclano se una condizione è avverata (di default se il giocatore clicca il testo, 
+	nella funzione shSceneLoop di sceneHandler.c).
 */
 
 #include<SFML\Graphics.h>
@@ -37,10 +37,16 @@ typedef struct dtDynText
 	dtDynTextCh* states;//lista degli stati
 } dtDynText;
 
-dtDynTextCh* dtDynTextChAppend(dtDynTextCh* DT, const char* str)
+dtDynTextCh* dtChGetLast(dtDynTextCh* DT)
 {
-	while (DT->next != NULL)
-		DT = DT->next;
+	if (DT->next != NULL) DT = dtChGetLast(DT->next);
+	
+	return DT;
+}
+
+dtDynTextCh* dtChAppend(dtDynText* DTTC, const char* str)
+{
+	dtDynTextCh* DT = dtChGetLast(DTTC->states);
 
 	DT->next = malloc(sizeof(dtDynTextCh));
 
@@ -52,7 +58,11 @@ dtDynTextCh* dtDynTextChAppend(dtDynTextCh* DT, const char* str)
 		
 		char* STRtmp = DT->ctxt;
 		
-		if (STRtmp != NULL) strcpy_s(STRtmp, (strlen(str)+1) * sizeof(char), str);
+		if (STRtmp != NULL)
+		{
+			DTTC->stateT++;
+			strcpy_s(STRtmp, (strlen(str) + 1) * sizeof(char), str);
+		}
 		else printf("Errore nell'allocazione di memoria per la stringa %s", str);
 	}
 	else {
@@ -64,24 +74,32 @@ dtDynTextCh* dtDynTextChAppend(dtDynTextCh* DT, const char* str)
 
 void shCenterText(sfText* t);
 
-void dtDynTextUpdate(dtDynText* DTTC)
+//Imposta lo stato del testo dinamico DTTC a state
+//come return da un puntatore allo stato
+dtDynTextCh* dtSetState(dtDynText* DTTC, int state)
 {
 	dtDynTextCh* DTCtmp = DTTC->states;
 
+	if (state < 0) state += DTTC->stateT;
+
+	DTTC->state = state;
+
 	//arrivo allo stato corrente
 	int Ctmp;
-	for (Ctmp = DTTC->state; Ctmp != 0; Ctmp--)
+	for (Ctmp = DTTC->state; Ctmp>0; Ctmp--)
+	{
 		DTCtmp = DTCtmp->next;
 
-	//aumento lo stato di 1
-	DTTC->state++;
-	if (DTCtmp->next == NULL)//se gli stati sono finiti
-	{
-		//vado al primo stato
-		DTCtmp = DTTC->states;
-		DTTC->state = 0;
+		if (DTCtmp->next == NULL)//se gli stati sono finiti
+		{
+			//vado al primo stato
+			DTCtmp = DTTC->states;
+			DTTC->state = 0;
+		}
 	}
 
 	sfText_setString(DTTC->sText.text, DTCtmp->ctxt);
 	shCenterText(DTTC->sText.text);
+
+	return DTCtmp;
 }

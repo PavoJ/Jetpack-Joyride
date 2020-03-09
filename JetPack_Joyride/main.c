@@ -1,9 +1,9 @@
 #include"csfml_framework/sceneHandler.c"
 #include"consts.h"
 #include"logica.c"
-#include"settingsHandler.c"
 
 #include <SFML\Graphics.h>
+#include <SFML\Audio.h>
 
 #include <stdio.h>
 #include <stdarg.h>
@@ -12,12 +12,14 @@
 
 #include<string.h>
 
+#define fontSize (int)(((90./1920.)*(double)winWidth))
+
 char* pointsStr(int score, int highScore)
 {
 	static char* scoreTxt;
 	static bool setup;
 
-	const int MSize = strlen("Punteggio:0000000000\nRecord:0000000000")*sizeof(char);
+	const size_t MSize = strlen("Punteggio:0000000000\nRecord:0000000000")*sizeof(char);
 
 	if (scoreTxt == NULL || !setup)
 	{
@@ -38,6 +40,7 @@ void gameLoop(sfRenderWindow* win)
 	int winHeight = set->vMode.height;
 
 	player* pl = getP();
+	pl->position.y = coordMaxY - playerHeight;
 
 	//texture
 	sfTexture* bgTexture = sfTexture_createFromFile("basicbg.png", NULL);
@@ -51,25 +54,21 @@ void gameLoop(sfRenderWindow* win)
 	int stage = 1;//tiene conto dello stadio a cui si trovano i giocatori nel livello
 
 	sfFont* defaultF = sfFont_createFromFile("defaultFont.ttf");
-	int fontSize = 45;
 	
-	//Giocatore (non è uno sprite per alcune limitazioni di CSFML)
-	sfRectangleShape* mainChar = shAppendRectangleS(s, pl->position, (sfVector2f) { (playerWidth/1920)*winWidth, (playerHeight/1080)*winHeight }, true);
-	sfRectangleShape_setTexture(mainChar, playerTexture, true);
-	
+	//Giocatore
+	sfSprite* mainChar = shAppendSprite(s, playerTexture, pl->position, (sfVector2f) { (playerWidth / 1920)* winWidth, (playerHeight / 1080)* winHeight }, true);
+
 	//scritta del punteggio
 	sfText* scoreText = shAppendText(s, (sfVector2f) { 0, 0 }, sfBlue, defaultF, fontSize, pointsStr(score, highScore), true, false);
 
 	//sfondo
-	sfRectangleShape* bg = shAppendRectangleS(s, (sfVector2f) { 0, 0 }, (sfVector2f) { winWidth, winHeight }, false);
-	sfRectangleShape_setTexture(bg, bgTexture, false);
+	sfSprite* bg = shAppendSprite(s, bgTexture, (sfVector2f) { 0, 0 }, (sfVector2f) { winWidth, winHeight }, false);
 
 	//calcolo la dimensione della texture dell'ostacolo
 	sfVector2u obsSize = sfTexture_getSize(obsTexture);
 
 	//ostacolo
-	sfRectangleShape* obs = shAppendRectangleS(s, (sfVector2f) { 0, 0 }, (sfVector2f) { (obsSize.x * 3. / 1920.)*winWidth, (obsSize.y * 3. / 1920.)*winHeight }, false);
-	sfRectangleShape_setTexture(obs, obsTexture, true);
+	sfSprite* obs = shAppendSprite(s, obsTexture, (sfVector2f) { 0, 0 }, (sfVector2f) { (obsSize.x * 3. / 1920.)* winWidth, (obsSize.y * 3. / 1920.)* winHeight }, false);
 
 	//orologio di gioco (per aggiornarlo ogni tick)
 	sfClock* clk = sfClock_create();
@@ -136,8 +135,6 @@ void gameLoop(sfRenderWindow* win)
 
 	sfClock_destroy(clk);
 
-	pl->position.y = coordMaxY - playerHeight;
-
 	if (score > highScore) writeScore(score);
 }
 
@@ -162,29 +159,32 @@ int main ()
 	player* p = getP();
 
 	sfFont* defaultF = sfFont_createFromFile("defaultFont.ttf");
-	int fontSize = 70;
 	
 	scene* s;
 
 	sfTexture* mCT = sfTexture_createFromFile("Player.png", NULL);
 	sfTexture* bgT = sfTexture_createFromFile("basicbg.png", NULL);
 
-	sfRectangleShape* mainChar;
-	sfRectangleShape* bg;
+	sfSprite* mainChar;
+	sfSprite* bg;
 	
 	int inp;//input dell'utente
 	int a;//contatore per for
+
+	sfMusic* mainSong = sfMusic_createFromFile("JVZOSTV3L.ogg");
+	
+	if(mainSong != NULL)
+		sfMusic_play(mainSong);
 
 	bool playing = true;
 	while (playing && sfRenderWindow_isOpen(win))
 	{
 		s = shNewScene();
 
-		bg = shAppendRectangleS(s, (sfVector2f) { 0, 0 }, (sfVector2f) {winWidth, winHeight}, true);
-		sfRectangleShape_setTexture(bg, bgT, false);
+		bg = shAppendSprite(s, bgT, (sfVector2f) { 0.f, 0.f }, (sfVector2f) {winWidth, winHeight}, true);
 
-		mainChar = shAppendRectangleS(s, p->position, (sfVector2f) { (playerWidth / 1920.f)* winWidth, (playerHeight / 1080.f)* winHeight }, true);
-		sfRectangleShape_setTexture(mainChar, mCT, false);
+		p->position.y = coordMaxY - playerHeight;
+		mainChar = shAppendSprite(s, mCT, p->position, (sfVector2f) { (playerWidth / 1920.)* winWidth, (playerHeight / 1080.)* winHeight }, true);
 
 		shAppendText(s, textPos(1.f, 2.f), sfWhite, defaultF, fontSize, "Gioca", true, true);
 		shAppendText(s, textPos(2.f, 2.f), sfWhite, defaultF, fontSize, "Impostazioni", true, true);
@@ -212,16 +212,27 @@ int main ()
 			sfVideoMode* vModeArr = sfVideoMode_getFullscreenModes(&vModeCnt);
 
 			dtDynText* res = shAppendDynText(s, textPos(2.f, 4.f), sfWhite, defaultF, fontSize, true, true, 0);
-
+			
+			bool setString = false;
 			//aggiungo ogni tipo di risoluzione al testo dinamico
-			dtDynTextCh* DTC = res->states;
 			for (a = 0; a < vModeCnt; a++)
 			{
 				sprintf_s(buff, 25 * sizeof(char), "Risoluzione<%dx%d>", vModeArr[a].width, vModeArr[a].height);
-				dtDynTextChAppend(DTC, buff);
+				dtChAppend(res, buff);
+
+				if (vModeArr[a].width == set->vMode.width &&
+					vModeArr[a].height == set->vMode.height)
+				{
+					dtSetState(res, a);
+					setString = true;
+				}
 			}
-			sfText_setString(res->sText.text, res->states->ctxt);
-			shCenterText(res->sText.text);
+
+			if (!setString)
+			{
+				sfText_setString(res->sText.text, res->states->ctxt);
+				shCenterText(res->sText.text);
+			}
 
 			dtDynText* fullScreen = shAppendDynText(s, textPos(3.f, 4.f), sfWhite, defaultF, fontSize, true, true, 2, "Schermo intero<off>", "Schermo intero<on>");
 

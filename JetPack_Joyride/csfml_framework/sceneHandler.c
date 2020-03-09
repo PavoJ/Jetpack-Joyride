@@ -5,6 +5,7 @@
 
 //#include"csfml_framework.h"
 #include"dynText.c"
+#include"settingsHandler.c"
 
 #include<SFML\Graphics.h>
 
@@ -157,8 +158,11 @@ int shSceneLoop(scene* s, sfRenderWindow* win, sfVideoMode vMode, sfColor clearC
 
 			case sfEvtMouseButtonPressed:
 				//se il giocatore clicca il tasto sinistro del mouse
-				if (sfMouse_isButtonPressed(sfMouseLeft))
+				if (sfMouse_isButtonPressed(sfMouseLeft) || sfMouse_isButtonPressed(sfMouseRight))
 				{
+					bool button = sfMouse_isButtonPressed(sfMouseLeft);
+					int mod = button ? +1 : -1;
+
 					//se ha il mouse sopra a del testo
 					if (activeButton != -1)
 					{
@@ -169,8 +173,9 @@ int shSceneLoop(scene* s, sfRenderWindow* win, sfVideoMode vMode, sfColor clearC
 
 						//se e' un elemento di testo dinamico, cambia il suo stato
 						if (Stmp->type == dTxt)
-							dtDynTextUpdate(Stmp->T.dynText);
-						else if (Stmp->type == sTxt)
+							dtSetState(Stmp->T.dynText, Stmp->T.dynText->state + mod);
+						//se è un elemento di testo statico, ferma il loop e assegna il valore di return al testo cliccato
+						else if (Stmp->type == sTxt && button)
 							clickedButton = activeButton;
 					}
 				}
@@ -182,6 +187,7 @@ int shSceneLoop(scene* s, sfRenderWindow* win, sfVideoMode vMode, sfColor clearC
 
 		shRenderScene(s, win);
 	}
+
 	return clickedButton;
 }
 
@@ -216,7 +222,7 @@ dtDynText* shAppendDynText(scene* s, sfVector2f pos, sfColor color, sfFont* font
 	if (DTtmp != NULL)
 	{
 		DTtmp->stateT = argc;
-		DTtmp->state = 1;
+		DTtmp->state = 0;
 
 		DTtmp->sText.text = sfText_create();
 		if (DTtmp->sText.text != NULL)
@@ -239,7 +245,7 @@ dtDynText* shAppendDynText(scene* s, sfVector2f pos, sfColor color, sfFont* font
 				for (a = 0; a < argc; a++)
 				{
 					STRtmp = va_arg(list, char*);
-					dtDynTextChAppend(DTtmp->states, STRtmp);
+					dtChAppend(DTtmp, STRtmp);
 				}
 
 				sfText_setString(Ttmp, DTtmp->states->ctxt);
@@ -318,17 +324,26 @@ sfRectangleShape* shAppendRectangleS(scene* s, sfVector2f pos, sfVector2f dim, b
 //texture è la texture utilizzata dallo sprite
 //pos è la coordinata dello sprite, come origine ha il punto in alto a sinistra
 //drawOnRender determina se l'oggetto deve essere disegnato dalla funzione shRenderScene
-sfSprite* shAppendSprite(scene* s, sfTexture* texture, sfVector2f pos, bool drawOnRender)
+sfSprite* shAppendSprite(scene* s, sfTexture* texture, sfVector2f pos, sfVector2f dim, bool drawOnRender)
 {
+	sthSettings* set = sthGetSettings();
+	int winWidth = set->vMode.width;
+	int winHeight = set->vMode.height;
+
 	scene* Stmp = shSetLast(s);
 	
 	Stmp->type = spr;
 	Stmp->draw = drawOnRender;
 
+	Stmp->T.sprite = sfSprite_create();
 	sfSprite* Sptmp = Stmp->T.sprite;
-	Sptmp = sfSprite_create();
+
 	sfSprite_setTexture(Sptmp, texture, false);
 	sfSprite_setPosition(Sptmp, pos);
+
+	sfVector2u Tsize = sfTexture_getSize(texture);
+
+	sfSprite_setScale(Sptmp, (sfVector2f) {dim.x/(float)Tsize.x, dim.y/(float)Tsize.y});
 
 	return Sptmp;
 }

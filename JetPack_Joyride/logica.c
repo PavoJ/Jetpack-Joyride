@@ -7,9 +7,8 @@
 #include <math.h>
 
 #include "consts.h"
-#include "settingsHandler.c"
+#include "csfml_framework\settingsHandler.c"
 
-#define bgCount (ceil((float)winWidth / bgDim.x) + 1) // numero di sfondi su schermo
 #define obsCount ((int)ceil((double)( winWidth / minDelta)) + 2) // numero massimo di ostacoli su schermo
 
 /* costanti di scroll dello schermo */
@@ -65,7 +64,7 @@ player* getP()
 	if (!setup)
 	{
 		p.position.x = 130.f;
-		p.position.y = coordMaxY - playerHeight;
+		p.position.y = (float)(coordMaxY - playerHeight);
 		p.velocity = 0;
 
 		setup = true;
@@ -74,21 +73,29 @@ player* getP()
 	return &p;
 }
 
-void drawBackground(sfRenderWindow* win, sfRectangleShape* bg, int score)
+void drawBackground(sfRenderWindow* win, sfSprite* bg, int score)
 {
 	sthSettings* set = sthGetSettings();
 	int winWidth = set->vMode.width;
 	int winHeight = set->vMode.height;
 
-	sfVector2f bgDim = sfRectangleShape_getSize(bg);
+	sfVector2f Sscale = sfSprite_getScale(bg);
+	sfVector2u Tsize = sfTexture_getSize(sfSprite_getTexture(bg));
 
+	/*ottengo la dimensione dello sprite bg prendendo la dimensione della sua texture e moltiplicandola
+	per il fattore di scala dello sprite, dato che CSFML non offre funzioni per ottenere direttamente
+	la dimensione dello sprite*/
+	sfVector2f bgDim = (sfVector2f){ (float)Tsize.x * Sscale.x, (float)Tsize.y * Sscale.y };
+
+	float bgCount = (int)ceil((float)winWidth / bgDim.x) + 1;
+		
 	float i, x;
 	for (i = 0.f; i < bgCount; i++)
 	{
 		x = (i * bgDim.x) - (float)(score % (int)bgDim.x);
 
-		sfRectangleShape_setPosition(bg, (sfVector2f) { x, 0 });
-		sfRenderWindow_drawRectangleShape(win, bg, NULL);
+		sfSprite_setPosition(bg, (sfVector2f) { x, 0 });
+		sfRenderWindow_drawSprite(win, bg, NULL);
 	}
 }
 
@@ -120,7 +127,7 @@ obsInfo* getObsInfo()
 	return &d;
 }
 
-bool collisionCheck(int score, sfRectangleShape* player, sfRectangleShape* obsRect)
+bool collisionCheck(int score, sfSprite* player, sfSprite* obsRect)
 {
 	sthSettings* set = sthGetSettings();
 	int winWidth = set->vMode.width;
@@ -134,14 +141,14 @@ bool collisionCheck(int score, sfRectangleShape* player, sfRectangleShape* obsRe
 	bool gameOver = false;
 
 	sfFloatRect pl;
-	pl = sfRectangleShape_getGlobalBounds(player);
+	pl = sfSprite_getGlobalBounds(player);
 
 	sfFloatRect rect;
 	int i=0;
 	while(i < obsCount && !gameOver)
 	{
-		sfRectangleShape_setPosition(obsRect, (sfVector2f) { obs[i].pos.x - score, obs[i].pos.y });
-		rect = sfRectangleShape_getGlobalBounds(obsRect);
+		sfSprite_setPosition(obsRect, (sfVector2f) { obs[i].pos.x - score, obs[i].pos.y });
+		rect = sfSprite_getGlobalBounds(obsRect);
 
 		if (sfFloatRect_intersects(&rect, &pl, NULL))
 			gameOver = true;

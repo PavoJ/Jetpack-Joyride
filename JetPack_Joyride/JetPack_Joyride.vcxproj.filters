@@ -33,8 +33,8 @@
     <ClCompile Include="csfml_framework\dynText.c">
       <Filter>Source Files\csfml_framework</Filter>
     </ClCompile>
-    <ClCompile Include="settingsHandler.c">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="csfml_framework\settingsHandler.c">
+      <Filter>Source Files\csfml_framework</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -46,5 +46,13 @@
     <ClInclude Include="consts.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="Settings.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="lastScore.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
   </ItemGroup>
 </Project>

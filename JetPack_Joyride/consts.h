@@ -6,7 +6,7 @@
 #define tick 35 //millisecondi
 
 /* valori esterni dipendenti dalla finestra di gioco */
-#define coordMaxY ((double)winHeight-playerHeight)
+#define coordMaxY ((double)winHeight-(double)winHeight/20.)
 #define coordMinY ((double)winHeight/25.)
 
 #define playerWidth 100.
